@@ -1,0 +1,17 @@
+;// NeoTile: GroupWidth 1
+;// NeoTile: GroupHeight 1
+
+;// NeoTile: TileColour0 0,0,0
+;// NeoTile: TileColour1 255,0,0
+;// NeoTile: TileColour2 0,128,0
+;// NeoTile: TileColour3 0,0,255
+bmpNGPCLogoSmall:
+	DW 0000000100001000b
+	DW 0001010100100000b
+	DW 0100000001000000b
+	DW 0100010001111100b
+	DW 0001000100000000b
+	DW 0001000000000000b
+	DW 0000010000000000b
+	DW 0000010000000000b
+
