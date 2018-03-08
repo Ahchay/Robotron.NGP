@@ -89,13 +89,6 @@ LEVEL rtCreateLevel(u8 LevelNumber)
 	//Create a level containing a set number of Grunts, Hulks, Brains, Tanks and The Last Human Family
 	//Basically the level "definition" is the number of each type of robotron which are then spawned randomly
 
-	//In order of appearance then...
-
-	//for(iLoop=SPRITEROBOTRON;iLoop<=MAX_SPRITE;iLoop++)
-	//{
-	//	SetSprite(SPRITEROBOTRON+iLoop, 0, 0, 0, 0, 0);
-	//}
-
 	iLoop=0;
 
 	levRobotron.EnemyCount=0;
@@ -111,6 +104,7 @@ LEVEL rtCreateLevel(u8 LevelNumber)
 		//All types count towards the overall count
 		iRobotronBound+=rtLevel[LevelNumber][iTypeLoop];
 		//Create our new enemy objects of the current type.
+		// Should really make sure that they're not "too" close to the centre of the screen.
 		for(;iLoop<iRobotronBound;iLoop++)
 		{
 			levRobotron.Robotron[iLoop].Index=SPRITEROBOTRON+iLoop;
