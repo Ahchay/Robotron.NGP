@@ -1546,6 +1546,8 @@ void rtRobotronCollision(LEVEL * levRobotron, GAME gmRobotron, PLAYER * sprPlaye
 							CopySpriteTile((u16*)rtShot, (*sprPlayer).Shot[iShotLoop].sprShot.Tile, 0);
 							iShotLoop=MAX_SHOT;
 
+							PlaySound(SND_ROBOTDEATH);
+
 							//Decide what to do with the Robotron that we've just hit...
 							switch ((*levRobotron).Robotron[iRobotronLoop].Type)
 							{
@@ -1614,7 +1616,7 @@ void rtRobotronCollision(LEVEL * levRobotron, GAME gmRobotron, PLAYER * sprPlaye
 								case TYPE_TANK_SHOT:
 								case TYPE_ENFORCER_SHOT:
 								case TYPE_BRAIN_SHOT:
-									//Destroy. But don't change enemy count
+									//Destroy. But don't change enemy count or increase score.
 									(*levRobotron).Robotron[iRobotronLoop].Flags=ROBOTRON_DEAD;
 									(*levRobotron).Robotron[iRobotronLoop].sprRobotron.Direction=0;
 									CopySpriteTile((u16*)rtRobotron, (*levRobotron).Robotron[iRobotronLoop].sprRobotron.Tile, 0);
@@ -1779,7 +1781,7 @@ void rtClearScreen()
 
 	ClearSprites();
 
-	PlaySound(SND_FADE);
+	PlaySound(SND_SIREN);
 
 	//From the centre
 	for(iLoopWarp=0;iLoopWarp<=8;iLoopWarp++)
@@ -1849,5 +1851,4 @@ void rtClearScreen()
 		Sleep(3);
 	}
 
-	StopAllSound();
 }
