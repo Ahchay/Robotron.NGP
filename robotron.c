@@ -27,6 +27,7 @@ void rtCreatePalette()
 	SetPalette(SCR_1_PLANE, PAL_DEFAULT, 0, RGB(15,15,0),RGB(8,4,0),RGB(15,0,0));
 	SetPalette(SCR_1_PLANE, PAL_BORDER, 0, RGB(15,0,0), RGB(8,12,0), RGB(0,0,15));
 	SetPalette(SCR_1_PLANE, PAL_LOGO, 0, RGB(15,15,0), RGB(15,0,0), 0);
+	SetPalette(SCR_1_PLANE, PAL_ATTRACTTEXT, 0, RGB(15,15,15), RGB(15,15,15), RGB(15,15,15));
 
 	SetPalette(SCR_2_PLANE, PAL_DEFAULT, 0, RGB(4,2,0), RGB(8,4,0), RGB(15,7,0));
 	SetPalette(SCR_2_PLANE, PAL_NGPCLOGO, 0, RGB(15,0,0), RGB(0,15,0), RGB(0,0,15));
@@ -276,7 +277,7 @@ PLAYER rtMovePlayer(PLAYER sprPlayer, GAME gmRobotron)
 	return sprPlayer;
 }
 
-GAME rtDrawLogo(GAME gmPrevious)
+GAME rtAttractMode(GAME gmPrevious)
 {
 	GAME gameReturn;
 
@@ -288,11 +289,16 @@ GAME rtDrawLogo(GAME gmPrevious)
 	u8 iBorderPaletteStart;
 	u8 iBorderWhiteLogo;
 	u8 iBorderID;
+	u8 iAttractMode;
+	u16 iAttractFrame;
+	u8 iAttractTimer;
 
 	const u8 BorderPattern[2][34][3]={
 		{{SCR_2_PLANE,0,0},{SCR_2_PLANE,2,0},{SCR_2_PLANE,4,0},{SCR_2_PLANE,6,0},{SCR_2_PLANE,8,0},{SCR_2_PLANE,10,0},{SCR_2_PLANE,12,0},{SCR_2_PLANE,14,0},{SCR_2_PLANE,16,0},{SCR_2_PLANE,18,0},{SCR_2_PLANE,18,2},{SCR_2_PLANE,18,4},{SCR_2_PLANE,18,6},{SCR_2_PLANE,18,8},{SCR_2_PLANE,18,10},{SCR_2_PLANE,18,12},{SCR_2_PLANE,18,14},{SCR_2_PLANE,18,16},{SCR_2_PLANE,16,16},{SCR_2_PLANE,14,16},{SCR_2_PLANE,12,16},{SCR_2_PLANE,10,16},{SCR_2_PLANE,8,16},{SCR_2_PLANE,6,16},{SCR_2_PLANE,4,16},{SCR_2_PLANE,2,16},{SCR_2_PLANE,0,16},{SCR_2_PLANE,0,14},{SCR_2_PLANE,0,12},{SCR_2_PLANE,0,10},{SCR_2_PLANE,0,8},{SCR_2_PLANE,0,6},{SCR_2_PLANE,0,4},{SCR_2_PLANE,0,2}},
 		{{SCR_2_PLANE,1,0},{SCR_2_PLANE,3,0},{SCR_2_PLANE,5,0},{SCR_2_PLANE,7,0},{SCR_2_PLANE,9,0},{SCR_2_PLANE,11,0},{SCR_2_PLANE,13,0},{SCR_2_PLANE,15,0},{SCR_2_PLANE,17,0},{SCR_2_PLANE,18,1},{SCR_2_PLANE,18,3},{SCR_2_PLANE,18,5},{SCR_2_PLANE,18,7},{SCR_2_PLANE,18,9},{SCR_2_PLANE,18,11},{SCR_2_PLANE,18,13},{SCR_2_PLANE,18,15},{SCR_2_PLANE,17,16},{SCR_2_PLANE,15,16},{SCR_2_PLANE,13,16},{SCR_2_PLANE,11,16},{SCR_2_PLANE,9,16},{SCR_2_PLANE,7,16},{SCR_2_PLANE,5,16},{SCR_2_PLANE,3,16},{SCR_2_PLANE,1,16},{SCR_2_PLANE,0,15},{SCR_2_PLANE,0,13},{SCR_2_PLANE,0,11},{SCR_2_PLANE,0,9},{SCR_2_PLANE,0,7},{SCR_2_PLANE,0,5},{SCR_2_PLANE,0,3},{SCR_2_PLANE,0,1}}
 	};
+
+	gameReturn=gmPrevious;
 
 	//Draw logo's and allow the user to start a game/select difficulty etc
 
@@ -325,6 +331,11 @@ GAME rtDrawLogo(GAME gmPrevious)
 
 	iBorderPalette=0;
 	iBorderWhiteLogo=33;
+
+	iAttractMode=0;
+	iAttractFrame=0;
+	iAttractTimer=0;
+
 	while (!(JOYPAD & J_A))
 	{
 
@@ -332,6 +343,7 @@ GAME rtDrawLogo(GAME gmPrevious)
 
 		iPalette++;
 		SetPalette(SCR_1_PLANE, PAL_LOGO, 0, RGB(15,15,0), RGB(15,0,0), iPalette);
+		SetPalette(SCR_1_PLANE, PAL_ATTRACTTEXT, 0, iPalette, iPalette, iPalette);
 		iBorderID^=1;
 		if(iBorderID==1)
 		{
@@ -366,6 +378,21 @@ GAME rtDrawLogo(GAME gmPrevious)
 		if(iBorderPaletteStart>5) iBorderPaletteStart=5;
 		Sleep(6);
 
+		// should print the first line of the script?
+		for(iLoopX=0;iLoopX<=15;iLoopX++)
+		{
+			PutTile(SCR_1_PLANE, PAL_ATTRACTTEXT, 2+iLoopX, 15, sScript[iAttractFrame+iLoopX]);
+		}
+
+		iAttractTimer++;
+		if (iAttractTimer>=2)
+		{
+			iAttractFrame++;
+			iAttractTimer=0;
+			if (iAttractFrame>SCRIPT_LEN)
+				iAttractFrame=0;
+		}
+
 	}
 
 	ClearScreen(SCR_1_PLANE);
@@ -373,26 +400,7 @@ GAME rtDrawLogo(GAME gmPrevious)
 	ClearSprites();
 	Sleep(60);
 
-	// The game parameters. Basically, speed of enemies.
-	// These could increase over time and/or with the difficulty?
-	// Might also expose as a hidden menu under the "OPTION" button?
 
-	gameReturn.Difficulty=1;
-	gameReturn.ShotSpeed=128; //One pixel per frame
-	gameReturn.PlayerSpeed=64;
-	gameReturn.GruntSpeed=16;
-	gameReturn.HulkSpeed=8;
-	gameReturn.FamilySpeed=4;
-	gameReturn.SpheroidSpeed=48;
-	gameReturn.EnforcerSpeed=48;
-	gameReturn.EnforcerShotSpeed=48;
-	gameReturn.BrainSpeed=6;
-	gameReturn.BrainShotSpeed=6;
-	gameReturn.TankSpeed=96;
-	gameReturn.TankShotSpeed=96;
-	gameReturn.QuarkSpeed=64;
-	gameReturn.ShotFrequency=2048;
-	gameReturn.Level=0;
 	return gameReturn;
 }
 

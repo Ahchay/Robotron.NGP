@@ -92,6 +92,7 @@ typedef struct Game
 #define PAL_ROBOTRON 3
 #define PAL_BORDER 1
 #define PAL_LOGO 2
+#define PAL_ATTRACTTEXT 3
 #define PAL_NGPCLOGO 1
 #define PAL_CLEAR 0
 
@@ -183,7 +184,7 @@ u8 rtCollision(SPRITE sprPlayer, SPRITE sprRobotron);
 void rtCreatePalette();
 void CopySpriteTile(u16 * SpriteTiles, u16 TileNumber, u16 AnimNumber);
 void rtInitialise();
-GAME rtDrawLogo();
+GAME rtAttractMode(GAME);
 void rtCreatePalette();
 PLAYER rtCreatePlayer();
 LEVEL rtCreateLevel(u8 LevelNumber);

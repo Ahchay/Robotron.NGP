@@ -60,11 +60,32 @@ void main()
 	//Create system palette
 	rtCreatePalette();
 
+	// Set default game parameters. Basically, speed of enemies.
+	// These could increase over time and/or with the difficulty?
+	// Will be exposed as a hidden menu under the "OPTION" button
+	// within the attract mode
+	gRobotron.Difficulty=1;
+	gRobotron.ShotSpeed=128; //One pixel per frame
+	gRobotron.PlayerSpeed=64;
+	gRobotron.GruntSpeed=16;
+	gRobotron.HulkSpeed=8;
+	gRobotron.FamilySpeed=4;
+	gRobotron.SpheroidSpeed=48;
+	gRobotron.EnforcerSpeed=48;
+	gRobotron.EnforcerShotSpeed=48;
+	gRobotron.BrainSpeed=6;
+	gRobotron.BrainShotSpeed=6;
+	gRobotron.TankSpeed=96;
+	gRobotron.TankShotSpeed=96;
+	gRobotron.QuarkSpeed=64;
+	gRobotron.ShotFrequency=2048;
+	gRobotron.Level=0;
+
 	while(1)
 	{
 		ClearSprites();
 
-		gRobotron=rtDrawLogo(gRobotron);
+		gRobotron=rtAttractMode(gRobotron);
 
 		//And create our level
 		levRobotron=rtCreateLevel(gRobotron.Level);

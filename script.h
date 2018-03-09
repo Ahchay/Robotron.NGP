@@ -1,44 +1,5 @@
 // the script...
-const char sScript[39][15]={
-	"Inspired by his",
-	"never ending   ",
-	"quest for      ",
-	"progress, in   ",
-	"2084 man       ",
-	"perfects the   ",
-	"Robotrons: a   ",
-	"robot species  ",
-	"so advanced    ",
-	"that man is    ",
-	"inferior to his",
-	"own creation.  ",
-	"Guided by their",
-	"infallible     ",
-	"logic, the     ",
-	"Robotrons      ",
-	"conclude: The  ",
-	"human race is  ",
-	"inefficient,   ",
-	"and therefore  ",
-	"must be        ",
-	"destroyed.     ",
-	"               ",
-	"You are the    ",
-	"last hope of   ",
-	"mankind. Due to",
-	"a genetic      ",
-	"engineering    ",
-	"error, you     ",
-	"possess        ",
-	"superhuman     ",
-	"powers. Your   ",
-	"mission is to  ",
-	"stop the       ",
-	"Robotrons, and ",
-	"save the last  ",
-	"human family:  ",
-	"Mommy, Daddy,  ",
-	"and Mikey.     "
-};
+#define SCRIPT_LEN 574
 
-#define SCRIPT_LEN 38
+const char sScript[SCRIPT_LEN]="                                  INSPIRED BY HIS NEVER ENDING QUEST FOR PROGRESS, IN 2084 MAN PERFECTS THE ROBOTRONS: A ROBOT SPECIES SO ADVANCED THAT MAN IS INFERIOR TO HIS OWN CREATION. GUIDED BY THEIR INFALLIBLE LOGIC, THE ROBOTRONS CONCLUDE: THE HUMAN RACE IS INEFFICIENT, AND THEREFORE MUST BE DESTROYED.                                  YOU ARE THE LAST HOPE OF MANKIND. DUE TO A GENETIC ENGINEERING ERROR, YOU POSSESS SUPERHUMAN POWERS. YOUR MISSION IS TO STOP THE ROBOTRONS, AND SAVE THE LAST HUMAN FAMILY: MOMMY, DADDY, AND MIKEY.                                  ";
+
