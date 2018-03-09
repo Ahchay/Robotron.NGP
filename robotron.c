@@ -10,7 +10,7 @@
 #include "Tiles/rtLogo.c"
 #include "Tiles/NGPCLogo.c"
 #include "Tiles/rtFont.c"
-#include "Tiles/rtOfThe.c"
+#include "Tiles/rtBlogLogo.c"
 
 //Levels
 #include "levels.c"
@@ -275,7 +275,7 @@ PLAYER rtMovePlayer(PLAYER sprPlayer, GAME gmRobotron)
 	return sprPlayer;
 }
 
-GAME rtDrawLogo()
+GAME rtDrawLogo(GAME gmPrevious)
 {
 	GAME gameReturn;
 
@@ -299,7 +299,8 @@ GAME rtDrawLogo()
 	ClearSprites();
 	InstallTileSetAt(rtLogo, sizeof(rtLogo)/2, LogoTileBase);
 	InstallTileSetAt(NGPCLogo, sizeof(NGPCLogo)/2, NGPCLogoTileBase);
-	InstallTileSetAt(rtOfThe, sizeof(rtOfThe)/2, OfTheTileBase);
+	InstallTileSetAt(rtBlogLogo, sizeof(rtBlogLogo)/2, BlogLogoTileBase);
+
 	for(iLoopX=0;iLoopX<=17;iLoopX++)
 	{
 		for(iLoopY=0;iLoopY<=7;iLoopY++)
@@ -310,13 +311,12 @@ GAME rtDrawLogo()
 
 	iBorderID=0;
 
+	// Draw the logo and splash screen...
 	PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 11, "  PRESENTED BY");
-	PrintString(SCR_1_PLANE, PAL_LOGO, 4, 13, "WAY");
-	PutTile(SCR_1_PLANE, PAL_LOGO, 7, 13, OfTheTileBase);
-	PutTile(SCR_1_PLANE, PAL_LOGO, 8, 13, OfTheTileBase+1);
-	PutTile(SCR_1_PLANE, PAL_LOGO, 9, 13, OfTheTileBase+2);
-	PutTile(SCR_1_PLANE, PAL_LOGO, 10, 13, OfTheTileBase+3);
-	PrintString(SCR_1_PLANE, PAL_LOGO, 11, 13, "RODENT");
+	for(iLoopX=0;iLoopX<=11;iLoopX++)
+	{
+		PutTile(SCR_1_PLANE, PAL_LOGO, 4+iLoopX, 13, BlogLogoTileBase+iLoopX);
+	}
 
 	iPalette=0;
 	iBorderPaletteStart=5;
@@ -325,6 +325,9 @@ GAME rtDrawLogo()
 	iBorderWhiteLogo=33;
 	while (!(JOYPAD & J_A))
 	{
+
+		// Switch between the logo screen, game rules (SAVE THE LAST HUMAN FAMILY) and high score table.
+
 		iPalette++;
 		SetPalette(SCR_1_PLANE, PAL_LOGO, 0, RGB(15,15,0), RGB(15,0,0), iPalette);
 		iBorderID^=1;
@@ -360,6 +363,7 @@ GAME rtDrawLogo()
 		iBorderPaletteStart-=iBorderID;
 		if(iBorderPaletteStart>5) iBorderPaletteStart=5;
 		Sleep(6);
+
 	}
 
 	ClearScreen(SCR_1_PLANE);
@@ -367,6 +371,11 @@ GAME rtDrawLogo()
 	ClearSprites();
 	Sleep(60);
 
+	// The game parameters. Basically, speed of enemies.
+	// These could increase over time and/or with the difficulty?
+	// Might also expose as a hidden menu under the "OPTION" button?
+
+	gameReturn.Difficulty=1;
 	gameReturn.ShotSpeed=128; //One pixel per frame
 	gameReturn.PlayerSpeed=64;
 	gameReturn.GruntSpeed=16;
@@ -374,10 +383,12 @@ GAME rtDrawLogo()
 	gameReturn.FamilySpeed=4;
 	gameReturn.SpheroidSpeed=48;
 	gameReturn.EnforcerSpeed=48;
+	gameReturn.EnforcerShotSpeed=48;
 	gameReturn.BrainSpeed=6;
-	gameReturn.TankSpeed=64;
+	gameReturn.BrainShotSpeed=6;
+	gameReturn.TankSpeed=96;
+	gameReturn.TankShotSpeed=96;
 	gameReturn.QuarkSpeed=64;
-	gameReturn.Difficulty=5;
 	gameReturn.ShotFrequency=2048;
 	gameReturn.Level=0;
 	return gameReturn;
@@ -1302,7 +1313,92 @@ LEVEL rtMoveTank(u8 iTank, LEVEL levRobotron, GAME gmRobotron, PLAYER sprPlayer)
 
 ROBOTRON rtMoveBrainShot(ROBOTRON rtBrainShot, GAME gmRobotron, PLAYER sprPlayer)
 {
-	// Similar movement pattern to the Progs
+	// Similar movement pattern to the Progs - i.e. move in the current direction until level with the player and then home in...
+	if (rtBrainShot.sprRobotron.Direction==DIR_NORTH)
+	{
+		//Move northwards
+		if (rtBrainShot.sprRobotron.yPosition>MIN_Y)
+		{
+			rtBrainShot.sprRobotron.yPosition-=gmRobotron.BrainShotSpeed;
+		}
+		else
+		{
+			rtBrainShot.sprRobotron.Direction=DIR_SOUTH;
+		}
+		if (rtBrainShot.sprRobotron.yPosition-sprPlayer.sprPlayer.yPosition<128)
+		{
+			//head north/south
+			if (sprPlayer.sprPlayer.xPosition<rtBrainShot.sprRobotron.xPosition)
+				rtBrainShot.sprRobotron.Direction=DIR_NORTH;
+			else
+				rtBrainShot.sprRobotron.Direction=DIR_SOUTH;
+		}
+	}
+	if (rtBrainShot.sprRobotron.Direction==DIR_EAST)
+	{
+		//Move eastwards
+		if (rtBrainShot.sprRobotron.xPosition<MAX_X)
+		{
+			rtBrainShot.sprRobotron.xPosition+=gmRobotron.BrainShotSpeed;
+		}
+		else
+		{
+			rtBrainShot.sprRobotron.Direction=DIR_WEST;
+		}
+		//x position should be less than the players
+		if (sprPlayer.sprPlayer.xPosition-rtBrainShot.sprRobotron.xPosition<128)
+		{
+			//head north/south
+			if (sprPlayer.sprPlayer.yPosition<rtBrainShot.sprRobotron.yPosition)
+				rtBrainShot.sprRobotron.Direction=DIR_NORTH;
+			else
+				rtBrainShot.sprRobotron.Direction=DIR_SOUTH;
+		}
+
+	}
+	if (rtBrainShot.sprRobotron.Direction==DIR_SOUTH)
+	{
+		//Move south
+		if (rtBrainShot.sprRobotron.yPosition<MAX_Y)
+		{
+			rtBrainShot.sprRobotron.yPosition+=gmRobotron.BrainShotSpeed;
+		}
+		else
+		{
+			rtBrainShot.sprRobotron.Direction=DIR_NORTH;
+		}
+		//y position should be less than the players
+		if (sprPlayer.sprPlayer.yPosition-rtBrainShot.sprRobotron.yPosition<128)
+		{
+			//head north/south
+			if (sprPlayer.sprPlayer.xPosition<rtBrainShot.sprRobotron.xPosition)
+				rtBrainShot.sprRobotron.Direction=DIR_NORTH;
+			else
+				rtBrainShot.sprRobotron.Direction=DIR_SOUTH;
+		}
+	}
+	if (rtBrainShot.sprRobotron.Direction==DIR_WEST)
+	{
+		//Go west
+		if (rtBrainShot.sprRobotron.xPosition>MIN_X)
+		{
+			rtBrainShot.sprRobotron.xPosition-=gmRobotron.BrainShotSpeed;
+		}
+		else
+		{
+			rtBrainShot.sprRobotron.Direction=DIR_EAST;
+		}
+		// x position should be greater than the players
+		if (rtBrainShot.sprRobotron.xPosition-sprPlayer.sprPlayer.xPosition<128)
+		{
+			//head north/south
+			if (sprPlayer.sprPlayer.yPosition<rtBrainShot.sprRobotron.yPosition)
+				rtBrainShot.sprRobotron.Direction=DIR_NORTH;
+			else
+				rtBrainShot.sprRobotron.Direction=DIR_SOUTH;
+		}
+	}
+
 
 	rtBrainShot.sprRobotron.Animation^=1;
 
@@ -1315,7 +1411,56 @@ ROBOTRON rtMoveBrainShot(ROBOTRON rtBrainShot, GAME gmRobotron, PLAYER sprPlayer
 
 ROBOTRON rtMoveTankShot(ROBOTRON rtTankShot, GAME gmRobotron, PLAYER sprPlayer)
 {
-	// Straight at the player
+	// Just keeps going until destroyed
+	if (rtTankShot.sprRobotron.Direction==DIR_NORTH)
+	{
+		//Move northwards
+		if (rtTankShot.sprRobotron.yPosition>MIN_Y)
+		{
+			rtTankShot.sprRobotron.yPosition-=gmRobotron.TankShotSpeed;
+		}
+		else
+		{
+			rtTankShot.sprRobotron.Direction=DIR_SOUTH;
+		}
+	}
+	if (rtTankShot.sprRobotron.Direction==DIR_EAST)
+	{
+		//Move eastwards
+		if (rtTankShot.sprRobotron.xPosition<MAX_X)
+		{
+			rtTankShot.sprRobotron.xPosition+=gmRobotron.TankShotSpeed;
+		}
+		else
+		{
+			rtTankShot.sprRobotron.Direction=DIR_WEST;
+		}
+
+	}
+	if (rtTankShot.sprRobotron.Direction==DIR_SOUTH)
+	{
+		//Move south
+		if (rtTankShot.sprRobotron.yPosition<MAX_Y)
+		{
+			rtTankShot.sprRobotron.yPosition+=gmRobotron.TankShotSpeed;
+		}
+		else
+		{
+			rtTankShot.sprRobotron.Direction=DIR_NORTH;
+		}
+	}
+	if (rtTankShot.sprRobotron.Direction==DIR_WEST)
+	{
+		//Go west
+		if (rtTankShot.sprRobotron.xPosition>MIN_X)
+		{
+			rtTankShot.sprRobotron.xPosition-=gmRobotron.TankShotSpeed;
+		}
+		else
+		{
+			rtTankShot.sprRobotron.Direction=DIR_EAST;
+		}
+	}
 
 	rtTankShot.sprRobotron.Animation^=1;
 
@@ -1328,7 +1473,64 @@ ROBOTRON rtMoveTankShot(ROBOTRON rtTankShot, GAME gmRobotron, PLAYER sprPlayer)
 
 ROBOTRON rtMoveEnforcerShot(ROBOTRON rtEnforcerShot, GAME gmRobotron, PLAYER sprPlayer)
 {
-	// At the players original position
+	// keep travelling until it hits either the edge or the player
+	if (rtEnforcerShot.sprRobotron.Direction==DIR_NORTH)
+	{
+		//Move northwards
+		if (rtEnforcerShot.sprRobotron.yPosition>MIN_Y)
+		{
+			rtEnforcerShot.sprRobotron.yPosition-=gmRobotron.EnforcerShotSpeed;
+		}
+		else
+		{
+			rtEnforcerShot.Flags=ROBOTRON_DEAD;
+			rtEnforcerShot.sprRobotron.Direction=0;
+			CopySpriteTile((u16*)rtRobotron, rtEnforcerShot.sprRobotron.Tile, 0);
+		}
+	}
+	if (rtEnforcerShot.sprRobotron.Direction==DIR_EAST)
+	{
+		//Move eastwards
+		if (rtEnforcerShot.sprRobotron.xPosition<MAX_X)
+		{
+			rtEnforcerShot.sprRobotron.xPosition+=gmRobotron.EnforcerShotSpeed;
+		}
+		else
+		{
+			rtEnforcerShot.Flags=ROBOTRON_DEAD;
+			rtEnforcerShot.sprRobotron.Direction=0;
+			CopySpriteTile((u16*)rtRobotron, rtEnforcerShot.sprRobotron.Tile, 0);
+		}
+
+	}
+	if (rtEnforcerShot.sprRobotron.Direction==DIR_SOUTH)
+	{
+		//Move south
+		if (rtEnforcerShot.sprRobotron.yPosition<MAX_Y)
+		{
+			rtEnforcerShot.sprRobotron.yPosition+=gmRobotron.EnforcerShotSpeed;
+		}
+		else
+		{
+			rtEnforcerShot.Flags=ROBOTRON_DEAD;
+			rtEnforcerShot.sprRobotron.Direction=0;
+			CopySpriteTile((u16*)rtRobotron, rtEnforcerShot.sprRobotron.Tile, 0);
+		}
+	}
+	if (rtEnforcerShot.sprRobotron.Direction==DIR_WEST)
+	{
+		//Go west
+		if (rtEnforcerShot.sprRobotron.xPosition>MIN_X)
+		{
+			rtEnforcerShot.sprRobotron.xPosition-=gmRobotron.EnforcerShotSpeed;
+		}
+		else
+		{
+			rtEnforcerShot.Flags=ROBOTRON_DEAD;
+			rtEnforcerShot.sprRobotron.Direction=0;
+			CopySpriteTile((u16*)rtRobotron, rtEnforcerShot.sprRobotron.Tile, 0);
+		}
+	}
 
 	rtEnforcerShot.sprRobotron.Animation^=1;
 
