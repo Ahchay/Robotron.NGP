@@ -1,6 +1,7 @@
 #define MAX_ROBOTRON 50
 #define MAX_SHOT 5
 #define MAX_SPRITE 63
+#define HIGH_SCORE_TABLE_SIZE 10
 
 typedef struct Sprite
 {
@@ -48,6 +49,12 @@ typedef struct Level
 	ROBOTRON Robotron[MAX_ROBOTRON];
 } LEVEL;
 
+typedef struct HighScoreEntry
+{
+	u16 Score;
+	char Initials[3];
+} HIGHSCOREENTRY;
+
 typedef struct Game
 {
 	u8 Difficulty;
@@ -59,18 +66,22 @@ typedef struct Game
 	u16 FamilySpeed;
 	u16 SpheroidSpeed;
 	u16 EnforcerSpeed;
+	u16 EnforcerShotSpeed;
 	u16 BrainSpeed;
+	u16 BrainShotSpeed;
 	u16 QuarkSpeed;
 	u16 TankSpeed;
+	u16 TankShotSpeed;
 	u16 ShotFrequency;
+	HIGHSCOREENTRY HighScoreTable[HIGH_SCORE_TABLE_SIZE];
 } GAME;
 
 #define GeneralTileBase 128
 #define BorderTileBase 128
 #define SpriteTileBase 256
-#define LogoTileBase 136
-#define NGPCLogoTileBase 132
-#define OfTheTileBase 128
+#define LogoTileBase 144
+#define NGPCLogoTileBase 140
+#define BlogLogoTileBase 128
 
 #define COLLISION_MISSED 0
 #define COLLISION_HIT 1

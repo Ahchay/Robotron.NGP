@@ -64,7 +64,7 @@ void main()
 	{
 		ClearSprites();
 
-		gRobotron=rtDrawLogo();
+		gRobotron=rtDrawLogo(gRobotron);
 
 		//And create our level
 		levRobotron=rtCreateLevel(gRobotron.Level);
@@ -121,6 +121,8 @@ void main()
 		//Game Over
 
 		rtClearScreen();
+
+		// work out if we have a high score?
 		PrintString(SCR_1_PLANE, PAL_BORDER, 8, 8, "GAME OVER");
 		PrintString(SCR_1_PLANE, PAL_BORDER, 7, 10, "FINAL SCORE");
 		PrintDecimal(SCR_1_PLANE, PAL_BORDER, 8, 11, sprPlayer.Score, 8);
