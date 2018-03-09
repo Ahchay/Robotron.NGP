@@ -51,8 +51,8 @@ typedef struct Level
 
 typedef struct HighScoreEntry
 {
+	char HeroInitials[3];
 	u16 Score;
-	char Initials[3];
 } HIGHSCOREENTRY;
 
 typedef struct Game

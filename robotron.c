@@ -309,6 +309,7 @@ GAME rtAttractMode(GAME gmPrevious)
 	InstallTileSetAt(NGPCLogo, sizeof(NGPCLogo)/2, NGPCLogoTileBase);
 	InstallTileSetAt(rtBlogLogo, sizeof(rtBlogLogo)/2, BlogLogoTileBase);
 
+	//Draw the logo
 	for(iLoopX=0;iLoopX<=17;iLoopX++)
 	{
 		for(iLoopY=0;iLoopY<=7;iLoopY++)
@@ -318,13 +319,6 @@ GAME rtAttractMode(GAME gmPrevious)
 	}
 
 	iBorderID=0;
-
-	// Draw the logo and splash screen...
-	PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 11, "  PRESENTED BY");
-	for(iLoopX=0;iLoopX<=11;iLoopX++)
-	{
-		PutTile(SCR_1_PLANE, PAL_LOGO, 4+iLoopX, 13, BlogLogoTileBase+iLoopX);
-	}
 
 	iPalette=0;
 	iBorderPaletteStart=5;
@@ -340,6 +334,47 @@ GAME rtAttractMode(GAME gmPrevious)
 	{
 
 		// Switch between the logo screen, game rules (SAVE THE LAST HUMAN FAMILY) and high score table.
+		// Basically, use iAttractFrame to display different tableaus
+		switch (iAttractFrame)
+		{
+			case 0:
+				// Draw the credits lines...
+				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 11, "  PRESENTED BY  ");
+				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 12, "                ");
+				for(iLoopX=0;iLoopX<=11;iLoopX++)
+				{
+					PutTile(SCR_1_PLANE, PAL_LOGO, 4+iLoopX, 13, BlogLogoTileBase+iLoopX);
+				}
+				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 14, "                ");
+				break;
+			case 90:
+				//Introduce the Robotrons
+				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 11, "                ");
+				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 12, "                ");
+				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 13, "EVIL ROBOTRONS  ");
+				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 14, "                ");
+				break;
+			case 300:
+				//Introduce the Player
+				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 11, "                ");
+				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 12, "                ");
+				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 13, "A GENETIC FREAK ");
+				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 14, "                ");
+				break;
+			case 400:
+				//Introduce the Last Human Family
+				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 11, "                ");
+				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 12, "                ");
+				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 13, "MOM DAD MIKEY   ");
+				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 14, "                ");
+				break;
+			case 600:
+				//Show the high score table
+				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 11, "                ");
+				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 12, "                ");
+				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 13, "HIGH SCORE TABLE");
+				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 14, "                ");
+		}
 
 		iPalette++;
 		SetPalette(SCR_1_PLANE, PAL_LOGO, 0, RGB(15,15,0), RGB(15,0,0), iPalette);
@@ -378,7 +413,7 @@ GAME rtAttractMode(GAME gmPrevious)
 		if(iBorderPaletteStart>5) iBorderPaletteStart=5;
 		Sleep(6);
 
-		// should print the first line of the script?
+		// Print the current script...
 		for(iLoopX=0;iLoopX<=15;iLoopX++)
 		{
 			PutTile(SCR_1_PLANE, PAL_ATTRACTTEXT, 2+iLoopX, 15, sScript[iAttractFrame+iLoopX]);

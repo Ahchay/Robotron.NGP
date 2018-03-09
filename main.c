@@ -81,6 +81,9 @@ void main()
 	gRobotron.ShotFrequency=2048;
 	gRobotron.Level=0;
 
+	//gRobotron.HighScoreTable={{"ELX",10000},{"EUG",8000},{"AKA",8000},{"TSB",8000},{"BOF",8000},{"KOW",8000},{"RKY",8000},{"MOM",8000},{"DAD",8000},{"MKY",8000}};
+	gRobotron.HighScoreTable[0].HeroInitials = "ELX";
+
 	while(1)
 	{
 		ClearSprites();
