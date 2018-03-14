@@ -27,6 +27,8 @@ void main()
 	LEVEL levRobotron;
 	GAME gRobotron;
 	u8 iLoop;
+	HIGHSCOREENTRY hstDefault[10]={{"EUG",0},{"EUG",0},{"EUG",0},{"EUG",0},{"EUG",0},{"EUG",0},{"EUG",0},{"EUG",0},{"EUG",0},{"EUG",0}};
+
 
 	InitNGPC();
 	SysSetSystemFont();
@@ -81,14 +83,12 @@ void main()
 	gRobotron.ShotFrequency=2048;
 	gRobotron.Level=0;
 
-	//gRobotron.HighScoreTable={{"ELX",10000},{"EUG",8000},{"AKA",8000},{"TSB",8000},{"BOF",8000},{"KOW",8000},{"RKY",8000},{"MOM",8000},{"DAD",8000},{"MKY",8000}};
-	gRobotron.HighScoreTable[0].HeroInitials = "ELX";
-
 	while(1)
 	{
 		ClearSprites();
 
-		gRobotron=rtAttractMode(gRobotron);
+		// Need to pass in the High Score Table as well...
+		gRobotron=rtAttractMode(gRobotron, hstDefault);
 
 		//And create our level
 		levRobotron=rtCreateLevel(gRobotron.Level);
@@ -146,7 +146,7 @@ void main()
 
 		rtClearScreen();
 
-		// work out if we have a high score?
+		// work out if we have a high score and inject into the high score table if we do...
 		PrintString(SCR_1_PLANE, PAL_BORDER, 8, 8, "GAME OVER");
 		PrintString(SCR_1_PLANE, PAL_BORDER, 7, 10, "FINAL SCORE");
 		PrintDecimal(SCR_1_PLANE, PAL_BORDER, 8, 11, sprPlayer.Score, 8);

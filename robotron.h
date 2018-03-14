@@ -51,7 +51,7 @@ typedef struct Level
 
 typedef struct HighScoreEntry
 {
-	char HeroInitials[3];
+	char Initials[3];
 	u16 Score;
 } HIGHSCOREENTRY;
 
@@ -73,7 +73,6 @@ typedef struct Game
 	u16 TankSpeed;
 	u16 TankShotSpeed;
 	u16 ShotFrequency;
-	HIGHSCOREENTRY HighScoreTable[HIGH_SCORE_TABLE_SIZE];
 } GAME;
 
 #define GeneralTileBase 128
@@ -184,7 +183,7 @@ u8 rtCollision(SPRITE sprPlayer, SPRITE sprRobotron);
 void rtCreatePalette();
 void CopySpriteTile(u16 * SpriteTiles, u16 TileNumber, u16 AnimNumber);
 void rtInitialise();
-GAME rtAttractMode(GAME);
+GAME rtAttractMode(GAME gmRobotron, HIGHSCOREENTRY hstRobotron[]);
 void rtCreatePalette();
 PLAYER rtCreatePlayer();
 LEVEL rtCreateLevel(u8 LevelNumber);

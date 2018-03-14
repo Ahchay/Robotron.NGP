@@ -277,7 +277,7 @@ PLAYER rtMovePlayer(PLAYER sprPlayer, GAME gmRobotron)
 	return sprPlayer;
 }
 
-GAME rtAttractMode(GAME gmPrevious)
+GAME rtAttractMode(GAME gmPrevious, HIGHSCOREENTRY hstRobotron[])
 {
 	GAME gameReturn;
 
