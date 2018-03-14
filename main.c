@@ -27,7 +27,7 @@ void main()
 	LEVEL levRobotron;
 	GAME gRobotron;
 	u8 iLoop;
-	HIGHSCOREENTRY hstDefault[10]={{"EUG",0},{"EUG",0},{"EUG",0},{"EUG",0},{"EUG",0},{"EUG",0},{"EUG",0},{"EUG",0},{"EUG",0},{"EUG",0}};
+	HIGHSCOREENTRY hstDefault[10]={{"EUG",50000},{"TSB",40000},{"BOF",30000},{"AKA",20000},{"KOW",10000},{"ROK",5000},{"MOM",4000},{"DAD",3000},{"MKY",1000},{"ROB",0}};
 
 
 	InitNGPC();

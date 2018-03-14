@@ -309,15 +309,6 @@ GAME rtAttractMode(GAME gmPrevious, HIGHSCOREENTRY hstRobotron[])
 	InstallTileSetAt(NGPCLogo, sizeof(NGPCLogo)/2, NGPCLogoTileBase);
 	InstallTileSetAt(rtBlogLogo, sizeof(rtBlogLogo)/2, BlogLogoTileBase);
 
-	//Draw the logo
-	for(iLoopX=0;iLoopX<=17;iLoopX++)
-	{
-		for(iLoopY=0;iLoopY<=7;iLoopY++)
-		{
-			PutTile(SCR_1_PLANE, PAL_LOGO, iLoopX+1, iLoopY+3, LogoTileBase+((u16)iLoopY*18)+(u16)iLoopX);
-		}
-	}
-
 	iBorderID=0;
 
 	iPalette=0;
@@ -339,6 +330,14 @@ GAME rtAttractMode(GAME gmPrevious, HIGHSCOREENTRY hstRobotron[])
 		{
 			case 0:
 				// Draw the credits lines...
+				//Draw the logo
+				for(iLoopX=0;iLoopX<=17;iLoopX++)
+				{
+					for(iLoopY=0;iLoopY<=7;iLoopY++)
+					{
+						PutTile(SCR_1_PLANE, PAL_LOGO, iLoopX+1, iLoopY+3, LogoTileBase+((u16)iLoopY*18)+(u16)iLoopX);
+					}
+				}
 				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 11, "  PRESENTED BY  ");
 				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 12, "                ");
 				for(iLoopX=0;iLoopX<=11;iLoopX++)
@@ -369,11 +368,29 @@ GAME rtAttractMode(GAME gmPrevious, HIGHSCOREENTRY hstRobotron[])
 				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 14, "                ");
 				break;
 			case 600:
+				//Clear the logo area
+				for(iLoopX=0;iLoopX<=17;iLoopX++)
+				{
+					for(iLoopY=0;iLoopY<=7;iLoopY++)
+					{
+						PutTile(SCR_1_PLANE, PAL_LOGO, iLoopX+1, iLoopY+3, 32);
+					}
+				}
+
 				//Show the high score table
 				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 11, "                ");
 				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 12, "                ");
-				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 13, "HIGH SCORE TABLE");
-				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 14, "                ");
+				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 13, "    ROBOTRON    ");
+				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 14, "     HEROES     ");
+				// Can fit into two columns if we put the score under the initials...
+				for(iLoopX=0;iLoopX<2;iLoopX++)
+				{
+						for(iLoopY=0;iLoopY<5;iLoopY++)
+						{
+							PrintString(SCR_1_PLANE, PAL_ATTRACTTEXT, 2  + (iLoopX*8),3 + iLoopY*2, hstRobotron[iLoopY*2+iLoopX].Initials);
+							PrintDecimal(SCR_1_PLANE, PAL_LOGO, 2  + (iLoopX*8),4 + iLoopY*2, hstRobotron[iLoopY*2+iLoopX].Score, 7);
+						}
+				}
 		}
 
 		iPalette++;
