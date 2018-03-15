@@ -24,6 +24,7 @@ typedef struct Player
 	u8 Index;
 	SPRITE sprPlayer;
 	u8 Lives;
+	u8 FamilyMultiplier;
 	u8 Flags;
 	u16 Score;
 	u8 ShotDirection;

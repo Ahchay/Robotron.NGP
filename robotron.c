@@ -68,6 +68,7 @@ PLAYER rtCreatePlayer()
 
 	sprPlayer.Lives=3;
 	sprPlayer.Score=0;
+	sprPlayer.FamilyMultiplier=1;
 	sprPlayer.Flags=0;
 	sprPlayer.sprPlayer.xPosition=9216;
 	sprPlayer.sprPlayer.yPosition=9216;
@@ -299,6 +300,8 @@ GAME rtAttractMode(GAME gmPrevious, HIGHSCOREENTRY hstRobotron[], u16 StartFrame
 	};
 
 	gameReturn=gmPrevious;
+	// Comment this line out to allow "continuous" progression through the levels. Handy for testing.
+	gameReturn.Level=0;
 
 	//Draw logo's and allow the user to start a game/select difficulty etc
 
@@ -1876,6 +1879,9 @@ void rtRobotronCollision(LEVEL * levRobotron, GAME gmRobotron, PLAYER * sprPlaye
 					SetPalette(SPRITE_PLANE, PAL_PLAYER, 0, RGB(iPaletteLoop%16, (iPaletteLoop+8)%16,(iPaletteLoop+12)%16), RGB(iPaletteLoop%16, (iPaletteLoop+8)%16,(iPaletteLoop+12)%16), RGB(iPaletteLoop%16, (iPaletteLoop+8)%16,(iPaletteLoop+12)%16));
 					Sleep(1);
 				}
+				// Reset the family multiplier
+				(*sprPlayer).FamilyMultiplier=1;
+				// Kill the player
 				(*sprPlayer).Flags=PLAYER_DEAD;
 			}
 			else
@@ -1989,7 +1995,16 @@ void rtRobotronCollision(LEVEL * levRobotron, GAME gmRobotron, PLAYER * sprPlaye
 				(*levRobotron).Robotron[iRobotronLoop].Flags=ROBOTRON_DEAD;
 				(*levRobotron).Robotron[iRobotronLoop].sprRobotron.Direction=0;
 				CopySpriteTile((u16*)rtRobotron, (*levRobotron).Robotron[iRobotronLoop].sprRobotron.Tile, 0);
-				(*sprPlayer).Score+=100;
+				(*sprPlayer).Score+=(100 * (*sprPlayer).FamilyMultiplier);
+				// Increase the family multiplier up to 10x
+				if ((*sprPlayer).FamilyMultiplier == 5)
+					(*sprPlayer).FamilyMultiplier=10;
+				if ((*sprPlayer).FamilyMultiplier == 3)
+					(*sprPlayer).FamilyMultiplier=5;
+				if ((*sprPlayer).FamilyMultiplier == 2)
+					(*sprPlayer).FamilyMultiplier=3;
+				if ((*sprPlayer).FamilyMultiplier == 1)
+					(*sprPlayer).FamilyMultiplier=2;
 			}
 		}
 	}
