@@ -293,6 +293,7 @@ GAME rtAttractMode(GAME gmPrevious, HIGHSCOREENTRY hstRobotron[], u16 StartFrame
 	u8 iAttractMode;
 	u16 iAttractFrame;
 	u8 iAttractTimer;
+	ROBOTRON rtAttractSprite;
 
 	const u8 BorderPattern[2][34][3]={
 		{{SCR_2_PLANE,0,0},{SCR_2_PLANE,2,0},{SCR_2_PLANE,4,0},{SCR_2_PLANE,6,0},{SCR_2_PLANE,8,0},{SCR_2_PLANE,10,0},{SCR_2_PLANE,12,0},{SCR_2_PLANE,14,0},{SCR_2_PLANE,16,0},{SCR_2_PLANE,18,0},{SCR_2_PLANE,18,2},{SCR_2_PLANE,18,4},{SCR_2_PLANE,18,6},{SCR_2_PLANE,18,8},{SCR_2_PLANE,18,10},{SCR_2_PLANE,18,12},{SCR_2_PLANE,18,14},{SCR_2_PLANE,18,16},{SCR_2_PLANE,16,16},{SCR_2_PLANE,14,16},{SCR_2_PLANE,12,16},{SCR_2_PLANE,10,16},{SCR_2_PLANE,8,16},{SCR_2_PLANE,6,16},{SCR_2_PLANE,4,16},{SCR_2_PLANE,2,16},{SCR_2_PLANE,0,16},{SCR_2_PLANE,0,14},{SCR_2_PLANE,0,12},{SCR_2_PLANE,0,10},{SCR_2_PLANE,0,8},{SCR_2_PLANE,0,6},{SCR_2_PLANE,0,4},{SCR_2_PLANE,0,2}},
@@ -353,22 +354,38 @@ GAME rtAttractMode(GAME gmPrevious, HIGHSCOREENTRY hstRobotron[], u16 StartFrame
 				//Introduce the Robotrons
 				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 11, "                ");
 				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 12, "                ");
-				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 13, "EVIL ROBOTRONS  ");
-				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 14, "                ");
+				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 13, "BEWARE THE EVIL ");
+				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 14, "   ROBOTRONS    ");
+
+				rtAttractSprite.Index=SPRITEROBOTRON;
+				rtAttractSprite.sprRobotron.xPosition=16<<7;
+				rtAttractSprite.sprRobotron.yPosition=176<<7;
+				rtAttractSprite.sprRobotron.Direction=DIR_EAST;
+				rtAttractSprite.sprRobotron.Animation=0;
+				rtAttractSprite.sprRobotron.Tile=TILEROBOTRON;
+				rtAttractSprite.Type=TYPE_GRUNT;
+				rtAttractSprite.DecisionTimer=0;
+				rtAttractSprite.Decision=0;
+				rtAttractSprite.Flags=ROBOTRON_ACTIVE;
+
+				CopySpriteTile((u16*)rtRobotron, rtAttractSprite.sprRobotron.Tile, (rtAttractSprite.Type<<5)+(rtAttractSprite.sprRobotron.Direction<<1)+rtAttractSprite.sprRobotron.Animation);
+				//SetSprite(levRobotron.Robotron[iTankLoop].Index, levRobotron.Robotron[iTankLoop].sprRobotron.Tile, 0, levRobotron.Robotron[iTankLoop].sprRobotron.xPosition>>7, levRobotron.Robotron[iTankLoop].sprRobotron.yPosition>>7, PAL_ROBOTRON+(u8)levRobotron.Robotron[iTankLoop].Type);
+				SetSprite(rtAttractSprite.Index, rtAttractSprite.sprRobotron.Tile, 0, rtAttractSprite.sprRobotron.xPosition>>7, rtAttractSprite.sprRobotron.yPosition>>7, PAL_ROBOTRON+(u8)rtAttractSprite.Type);
+
 				break;
 			case 300:
 				//Introduce the Player
 				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 11, "                ");
 				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 12, "                ");
-				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 13, "A GENETIC FREAK ");
-				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 14, "                ");
+				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 13, "   ARE YOU A    ");
+				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 14, " ROBOTRON HERO? ");
 				break;
 			case 400:
 				//Introduce the Last Human Family
 				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 11, "                ");
 				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 12, "                ");
-				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 13, "MOM DAD MIKEY   ");
-				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 14, "                ");
+				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 13, " SAVE THE LAST  ");
+				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 14, " HUMAN  FAMILY  ");
 				break;
 			case 600:
 				//Clear the logo area
@@ -396,6 +413,18 @@ GAME rtAttractMode(GAME gmPrevious, HIGHSCOREENTRY hstRobotron[], u16 StartFrame
 						}
 				}
 		}
+
+		// Then use various key states to "walk in" the various players from the left to the right...
+		if (iAttractFrame>50 && iAttractFrame<72)
+		{
+			// Move my grunt...
+			rtAttractSprite.sprRobotron.Animation^=1;
+			rtAttractSprite.sprRobotron.xPosition+=gameReturn.GruntSpeed;
+
+			CopySpriteTile((u16*)rtRobotron, rtAttractSprite.sprRobotron.Tile,(rtAttractSprite.sprRobotron.Direction<<1)+rtAttractSprite.sprRobotron.Animation);
+			SetSpritePosition(rtAttractSprite.Index, rtAttractSprite.sprRobotron.xPosition>>7, rtAttractSprite.sprRobotron.yPosition>>7);
+		}
+
 
 		iPalette++;
 		SetPalette(SCR_1_PLANE, PAL_LOGO, 0, RGB(15,15,0), RGB(15,0,0), iPalette);
