@@ -1764,7 +1764,7 @@ void DrawLine(u16 * BitmapAddress, u8 x1, u8 y1, u8 x2, u8 y2, u8 Colour)
 }
 
 
-//Two specific cases for vertical and horizontal lines
+//Two specific cases for vertical and horizontal lines - should probably put in a daemon in DrawLine() to test for the cases...
 void DrawLineVertical(u16 * BitmapAddress, u16 x, u16 y1, u16 y2, u16 Colour)
 {
 	u16 y;
@@ -1798,4 +1798,33 @@ void DrawLineHorizontal(u16 * BitmapAddress, u16 x1, u16 x2, u16 y, u16 Colour)
 	}
 }
 
+// Read from/write to unprotected flash.
+// Doesn't work. Think I need to use VECT_FLASHWRITE as per documentation at
+// http://neogeopocket.es/wp-content/uploads/files/ngp_official/SysCall.PDF
+/*
+	ldb rw3, VECT_FLASHWRITE	; writing flash memory
+	ldb ra3, 0x00				; select flash memory card (0 = 0x200000, 1=0x800000)
+	ldw rbc3, 0x01				; transfer byte number (in multiples of 256) i.e. the length of the data
+	ldl xhl3, 0x6600			; from address (the data to store - work RAM is from 0x6000)
+	ldl xde3, 0x70000			; to address (the location to put it - flash blocks are every 0xN0000)
+	swi 1						; software interrupt 1
+
+	// Check the __ASM() examples above for usage.
+	// Still not really any wiser as to how to "actually" use this
+*/
+u8 ReadUnprotected(u8 ByteNumber)
+{
+	u8 ReturnByte;
+	u16 * ReadAddress = UNPROTECTED_FLASH;
+	ReturnByte=(ReadAddress[ByteNumber]);
+
+	return ReturnByte;
+}
+
+WriteUnprotected(u8 ByteNumber, u8 WriteByte)
+{
+	u16 * WriteAddress = UNPROTECTED_FLASH;
+
+	WriteAddress[ByteNumber] = WriteByte;
+}
 

@@ -27,8 +27,11 @@ void main()
 	LEVEL levRobotron;
 	GAME gRobotron;
 	u8 iLoop;
-	HIGHSCOREENTRY hstDefault[10]={{"EUG",50000},{"TSB",40000},{"BOF",30000},{"AKA",20000},{"KOW",10000},{"ROK",5000},{"MOM",4000},{"DAD",3000},{"MKY",1000},{"ROB",0}};
-
+	u16 iAttractFrame;
+	u8 iScoreLoop;
+	HIGHSCOREENTRY hstSwapScore;
+	HIGHSCOREENTRY hstSwapScoreLast;
+	HIGHSCOREENTRY hstRobotron[HIGH_SCORE_TABLE_SIZE]={{"EUG",50000},{"TSB",40000},{"BOF",30000},{"AKA",20000},{"KOW",10000},{"ROK",5000},{"MOM",4000},{"DAD",3000},{"MKY",1000},{"ROB",0}};
 
 	InitNGPC();
 	SysSetSystemFont();
@@ -52,10 +55,10 @@ void main()
 			PrintDecimal(SCR_1_PLANE,0,0,1,iLoop,2);
 			PrintString(SCR_1_PLANE,0,0,0,"               ");
 			PrintString(SCR_1_PLANE,0,0,0,rtSoundName[iLoop-1]);
-			while (!(JOYPAD&J_A));
+			while (JOYPAD&J_A);
 			PlaySound(iLoop);
 			//Don't start again until the player releases the A button
-			while (JOYPAD&J_A);
+			while (!(JOYPAD&J_A));
 		}
 	}
 
@@ -83,12 +86,14 @@ void main()
 	gRobotron.ShotFrequency=2048;
 	gRobotron.Level=0;
 
+	iAttractFrame=0;
+
 	while(1)
 	{
 		ClearSprites();
 
 		// Need to pass in the High Score Table as well...
-		gRobotron=rtAttractMode(gRobotron, hstDefault);
+		gRobotron=rtAttractMode(gRobotron, hstRobotron, iAttractFrame, sprPlayer.Score);
 
 		//And create our level
 		levRobotron=rtCreateLevel(gRobotron.Level);
@@ -147,12 +152,26 @@ void main()
 		rtClearScreen();
 
 		// work out if we have a high score and inject into the high score table if we do...
-		PrintString(SCR_1_PLANE, PAL_BORDER, 8, 8, "GAME OVER");
-		PrintString(SCR_1_PLANE, PAL_BORDER, 7, 10, "FINAL SCORE");
-		PrintDecimal(SCR_1_PLANE, PAL_BORDER, 8, 11, sprPlayer.Score, 8);
+		for (iScoreLoop=0;iScoreLoop<HIGH_SCORE_TABLE_SIZE;iScoreLoop++)
+		{
+			if (sprPlayer.Score>hstRobotron[iScoreLoop].Score)
+			{
+				// Shuffle all lower scores down and inject new score into position
+				hstSwapScoreLast=hstRobotron[iScoreLoop];
+				hstRobotron[iScoreLoop]=rtEnterInitials(sprPlayer.Score);
+				for (iScoreLoop++;iScoreLoop<HIGH_SCORE_TABLE_SIZE;iScoreLoop++)
+				{
+					hstSwapScore=hstRobotron[iScoreLoop];
+					hstRobotron[iScoreLoop]=hstSwapScoreLast;
+					hstSwapScoreLast=hstSwapScore;
+				}
+			}
+		}
 
-		while (!(JOYPAD&J_A));
+		// Wait for the A button to be released...
 		while (JOYPAD&J_A);
+
+		iAttractFrame=600;
 
 	}
 }

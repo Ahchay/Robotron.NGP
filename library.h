@@ -108,6 +108,9 @@ void SetPixel(u16 * BitmapAddress, u16 xPosition, u16 yPosition, u16 Colour);
 void PutBitmapTile(u16 * BitmapAddress, u16 InputTile, u16 OutputTile);
 void DrawLine(u16 * BitmapAddress, u8 x1, u8 y1, u8 x2, u8 y2, u8 Colour);
 
+//Read/Write to unprotected Flash.
+u8 ReadUnprotected(u8 ByteNumber);
+WriteUnprotected(u8 ByteNumber, u8 WriteByte);
 
 /*
  * Defines used by the library

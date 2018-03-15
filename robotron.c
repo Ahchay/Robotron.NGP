@@ -277,7 +277,7 @@ PLAYER rtMovePlayer(PLAYER sprPlayer, GAME gmRobotron)
 	return sprPlayer;
 }
 
-GAME rtAttractMode(GAME gmPrevious, HIGHSCOREENTRY hstRobotron[])
+GAME rtAttractMode(GAME gmPrevious, HIGHSCOREENTRY hstRobotron[], u16 StartFrame, u16 LastScore)
 {
 	GAME gameReturn;
 
@@ -318,7 +318,7 @@ GAME rtAttractMode(GAME gmPrevious, HIGHSCOREENTRY hstRobotron[])
 	iBorderWhiteLogo=33;
 
 	iAttractMode=0;
-	iAttractFrame=0;
+	iAttractFrame=StartFrame;
 	iAttractTimer=0;
 
 	while (!(JOYPAD & J_A))
@@ -380,8 +380,9 @@ GAME rtAttractMode(GAME gmPrevious, HIGHSCOREENTRY hstRobotron[])
 				//Show the high score table
 				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 11, "                ");
 				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 12, "                ");
-				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 13, "    ROBOTRON    ");
-				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 14, "     HEROES     ");
+				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 13, "   YOUR SCORE   ");
+				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 14, "    99999999    ");
+				PrintDecimal(SCR_1_PLANE, PAL_DEFAULT, 6, 14, LastScore, 8);
 				// Can fit into two columns if we put the score under the initials...
 				for(iLoopX=0;iLoopX<2;iLoopX++)
 				{
@@ -454,6 +455,90 @@ GAME rtAttractMode(GAME gmPrevious, HIGHSCOREENTRY hstRobotron[])
 
 
 	return gameReturn;
+}
+
+HIGHSCOREENTRY rtEnterInitials(u16 Score)
+{
+	HIGHSCOREENTRY hstNewHero = {"AAA",0};
+	u8 iPosition=0;
+	u8 iOldPosition=1;
+	u8 jpPrev;
+	u8 jpThis;
+
+	hstNewHero.Score=Score;
+
+	// Allow player to enter their initials...
+	rtDrawLevel();
+
+	// Set base palettes
+	rtCreatePalette();
+
+	PrintString(SCR_1_PLANE, PAL_LOGO, 2, 4, "CONGRATULATIONS!");
+	PrintString(SCR_1_PLANE, PAL_LOGO, 2, 5, "   YOU ARE A    ");
+	PrintString(SCR_1_PLANE, PAL_LOGO, 2, 6, " ROBOTRON HERO  ");
+
+	PrintDecimal(SCR_1_PLANE, PAL_ATTRACTTEXT, 6, 8, hstNewHero.Score, 8);
+
+	PrintString(SCR_1_PLANE, PAL_BORDER, 8, 11, hstNewHero.Initials);
+
+	PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 14, " PLEASE  ENTER");
+	PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 15, " YOUR INITIALS");
+
+	jpPrev=JOYPAD;
+
+	// Wait for the A button to be released (in case it's held down from the game)
+	while ((JOYPAD&J_A));
+
+	// So, Left/Right to choose the letter. Up/Down to change it... A button to confirm
+	while (!(JOYPAD&J_A))
+	{
+		jpThis=JOYPAD;
+		if (jpThis!=jpPrev)
+		{
+			if ((jpThis&J_LEFT)&&(!(jpPrev&J_LEFT)))
+			{
+				if (iPosition==0)
+					iPosition=2;
+				else
+					iPosition--;
+			}
+			if ((jpThis&J_RIGHT)&&(!(jpPrev&J_RIGHT)))
+			{
+				if (iPosition==2)
+					iPosition=0;
+				else
+					iPosition++;
+			}
+			// Restrict to low-order ASCII Space(32) through to Z (90) only
+			if ((jpThis&J_UP)&&(!(jpPrev&J_UP)))
+			{
+				if(hstNewHero.Initials[iPosition]==90)
+					hstNewHero.Initials[iPosition]=32;
+				else
+					hstNewHero.Initials[iPosition]++;
+				PrintString(SCR_1_PLANE, PAL_BORDER, 8, 11, hstNewHero.Initials);
+			}
+			if ((jpThis&J_DOWN)&&(!(jpPrev&J_DOWN)))
+			{
+				if(hstNewHero.Initials[iPosition]==32)
+					hstNewHero.Initials[iPosition]=90;
+				else
+					hstNewHero.Initials[iPosition]--;
+				PrintString(SCR_1_PLANE, PAL_BORDER, 8, 11, hstNewHero.Initials);
+			}
+			jpPrev=jpThis;
+		}
+
+		if (iPosition!=iOldPosition)
+		{
+			PrintString(SCR_1_PLANE, PAL_BORDER, 8, 12, "   ");
+			PutTile(SCR_1_PLANE, PAL_ROBOTRON+TYPE_PLAYER, 8+iPosition, 12, 127);
+			iOldPosition=iPosition;
+		}
+
+	}
+
+	return hstNewHero;
 }
 
 u8 rtCollision(SPRITE sprPlayer, SPRITE sprRobotron)
@@ -614,7 +699,6 @@ void rtDrawLevel()
 		PutTile(SCR_1_PLANE, PAL_BORDER, 0, iLoop, BorderTileBase+rtBorderLeft);
 		PutTile(SCR_1_PLANE, PAL_BORDER, 19, iLoop, BorderTileBase+rtBorderRight);
 	}
-	PrintDecimal(SCR_1_PLANE, PAL_BORDER, 1, 0, 0, 8);
 }
 
 LEVEL rtMoveRobotrons(LEVEL levRobotron, GAME gmRobotron, PLAYER sprPlayer)
@@ -1905,6 +1989,7 @@ void rtRobotronCollision(LEVEL * levRobotron, GAME gmRobotron, PLAYER * sprPlaye
 				(*levRobotron).Robotron[iRobotronLoop].Flags=ROBOTRON_DEAD;
 				(*levRobotron).Robotron[iRobotronLoop].sprRobotron.Direction=0;
 				CopySpriteTile((u16*)rtRobotron, (*levRobotron).Robotron[iRobotronLoop].sprRobotron.Tile, 0);
+				(*sprPlayer).Score+=100;
 			}
 		}
 	}

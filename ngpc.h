@@ -84,6 +84,7 @@ typedef void (*FuncPtr)(void);
 #define SPRITE_RAM          (u8*)0x8800
 #define SPRITE_COLOUR       (u8*)0x8c00
 #define Z80_RAM				(u8*)0x7000
+#define UNPROTECTED_FLASH	(u16*)0xFF0000
 
 #define SWI3_INT			(*(Interrupt**)0x6FB8)
 #define SWI4_INT			(*(Interrupt**)0x6FBC)
