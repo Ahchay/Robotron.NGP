@@ -357,21 +357,6 @@ GAME rtAttractMode(GAME gmPrevious, HIGHSCOREENTRY hstRobotron[], u16 StartFrame
 				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 13, "BEWARE THE EVIL ");
 				PrintString(SCR_1_PLANE, PAL_DEFAULT, 2, 14, "   ROBOTRONS    ");
 
-				rtAttractSprite.Index=SPRITEROBOTRON;
-				rtAttractSprite.sprRobotron.xPosition=16<<7;
-				rtAttractSprite.sprRobotron.yPosition=176<<7;
-				rtAttractSprite.sprRobotron.Direction=DIR_EAST;
-				rtAttractSprite.sprRobotron.Animation=0;
-				rtAttractSprite.sprRobotron.Tile=TILEROBOTRON;
-				rtAttractSprite.Type=TYPE_GRUNT;
-				rtAttractSprite.DecisionTimer=0;
-				rtAttractSprite.Decision=0;
-				rtAttractSprite.Flags=ROBOTRON_ACTIVE;
-
-				CopySpriteTile((u16*)rtRobotron, rtAttractSprite.sprRobotron.Tile, (rtAttractSprite.Type<<5)+(rtAttractSprite.sprRobotron.Direction<<1)+rtAttractSprite.sprRobotron.Animation);
-				//SetSprite(levRobotron.Robotron[iTankLoop].Index, levRobotron.Robotron[iTankLoop].sprRobotron.Tile, 0, levRobotron.Robotron[iTankLoop].sprRobotron.xPosition>>7, levRobotron.Robotron[iTankLoop].sprRobotron.yPosition>>7, PAL_ROBOTRON+(u8)levRobotron.Robotron[iTankLoop].Type);
-				SetSprite(rtAttractSprite.Index, rtAttractSprite.sprRobotron.Tile, 0, rtAttractSprite.sprRobotron.xPosition>>7, rtAttractSprite.sprRobotron.yPosition>>7, PAL_ROBOTRON+(u8)rtAttractSprite.Type);
-
 				break;
 			case 300:
 				//Introduce the Player
@@ -413,18 +398,6 @@ GAME rtAttractMode(GAME gmPrevious, HIGHSCOREENTRY hstRobotron[], u16 StartFrame
 						}
 				}
 		}
-
-		// Then use various key states to "walk in" the various players from the left to the right...
-		if (iAttractFrame>50 && iAttractFrame<72)
-		{
-			// Move my grunt...
-			rtAttractSprite.sprRobotron.Animation^=1;
-			rtAttractSprite.sprRobotron.xPosition+=gameReturn.GruntSpeed;
-
-			CopySpriteTile((u16*)rtRobotron, rtAttractSprite.sprRobotron.Tile,(rtAttractSprite.sprRobotron.Direction<<1)+rtAttractSprite.sprRobotron.Animation);
-			SetSpritePosition(rtAttractSprite.Index, rtAttractSprite.sprRobotron.xPosition>>7, rtAttractSprite.sprRobotron.yPosition>>7);
-		}
-
 
 		iPalette++;
 		SetPalette(SCR_1_PLANE, PAL_LOGO, 0, RGB(15,15,0), RGB(15,0,0), iPalette);
