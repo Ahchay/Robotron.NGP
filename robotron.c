@@ -285,6 +285,7 @@ GAME rtAttractMode(GAME gmPrevious, HIGHSCOREENTRY hstRobotron[], u16 StartFrame
 	u8 iLoopX;
 	u8 iLoopY;
 	u8 iLoopBorder;
+	u8 iLoopSprite;
 	u8 iPalette;
 	u8 iBorderPalette;
 	u8 iBorderPaletteStart;
@@ -293,7 +294,7 @@ GAME rtAttractMode(GAME gmPrevious, HIGHSCOREENTRY hstRobotron[], u16 StartFrame
 	u8 iAttractMode;
 	u16 iAttractFrame;
 	u8 iAttractTimer;
-	ROBOTRON rtAttractSprite;
+	ROBOTRON rtAttractSprite[11];
 
 	const u8 BorderPattern[2][34][3]={
 		{{SCR_2_PLANE,0,0},{SCR_2_PLANE,2,0},{SCR_2_PLANE,4,0},{SCR_2_PLANE,6,0},{SCR_2_PLANE,8,0},{SCR_2_PLANE,10,0},{SCR_2_PLANE,12,0},{SCR_2_PLANE,14,0},{SCR_2_PLANE,16,0},{SCR_2_PLANE,18,0},{SCR_2_PLANE,18,2},{SCR_2_PLANE,18,4},{SCR_2_PLANE,18,6},{SCR_2_PLANE,18,8},{SCR_2_PLANE,18,10},{SCR_2_PLANE,18,12},{SCR_2_PLANE,18,14},{SCR_2_PLANE,18,16},{SCR_2_PLANE,16,16},{SCR_2_PLANE,14,16},{SCR_2_PLANE,12,16},{SCR_2_PLANE,10,16},{SCR_2_PLANE,8,16},{SCR_2_PLANE,6,16},{SCR_2_PLANE,4,16},{SCR_2_PLANE,2,16},{SCR_2_PLANE,0,16},{SCR_2_PLANE,0,14},{SCR_2_PLANE,0,12},{SCR_2_PLANE,0,10},{SCR_2_PLANE,0,8},{SCR_2_PLANE,0,6},{SCR_2_PLANE,0,4},{SCR_2_PLANE,0,2}},
@@ -320,6 +321,78 @@ GAME rtAttractMode(GAME gmPrevious, HIGHSCOREENTRY hstRobotron[], u16 StartFrame
 
 	iBorderPalette=0;
 	iBorderWhiteLogo=33;
+
+	// Set up our Attract Mode
+	rtAttractSprite[0].Index=SPRITEROBOTRON+0;
+	rtAttractSprite[0].sprRobotron.xPosition=ATTRACT_X;
+	rtAttractSprite[0].sprRobotron.yPosition=ATTRACT_Y;
+	rtAttractSprite[0].sprRobotron.Tile=TILEATTRACT+0;
+	rtAttractSprite[0].sprRobotron.Animation=0;
+	rtAttractSprite[0].Type=TYPE_GRUNT;
+	rtAttractSprite[0].sprRobotron.Direction=DIR_EAST;
+	rtAttractSprite[0].Flags=ROBOTRON_DEAD;
+	rtAttractSprite[0].DecisionTimer=90;
+	rtAttractSprite[0].Decision=120;
+	rtAttractSprite[1].Index=SPRITEROBOTRON+1;
+	rtAttractSprite[1].sprRobotron.xPosition=ATTRACT_X;
+	rtAttractSprite[1].sprRobotron.yPosition=ATTRACT_Y;
+	rtAttractSprite[1].sprRobotron.Tile=TILEATTRACT+1;
+	rtAttractSprite[1].sprRobotron.Animation=1;
+	rtAttractSprite[1].Type=TYPE_HULK;
+	rtAttractSprite[1].sprRobotron.Direction=DIR_EAST;
+	rtAttractSprite[1].Flags=ROBOTRON_DEAD;
+	rtAttractSprite[1].DecisionTimer=100;
+	rtAttractSprite[1].Decision=130;
+	rtAttractSprite[2].Index=SPRITEROBOTRON+2;
+	rtAttractSprite[2].sprRobotron.xPosition=ATTRACT_X;
+	rtAttractSprite[2].sprRobotron.yPosition=ATTRACT_Y;
+	rtAttractSprite[2].sprRobotron.Tile=TILEATTRACT+2;
+	rtAttractSprite[2].sprRobotron.Animation=1;
+	rtAttractSprite[2].Type=TYPE_SPHEROID;
+	rtAttractSprite[2].sprRobotron.Direction=DIR_EAST;
+	rtAttractSprite[2].Flags=ROBOTRON_DEAD;
+	rtAttractSprite[2].DecisionTimer=110;
+	rtAttractSprite[2].Decision=140;
+	rtAttractSprite[3].Index=SPRITEROBOTRON+3;
+	rtAttractSprite[3].sprRobotron.xPosition=ATTRACT_X;
+	rtAttractSprite[3].sprRobotron.yPosition=ATTRACT_Y;
+	rtAttractSprite[3].sprRobotron.Tile=TILEATTRACT+3;
+	rtAttractSprite[3].sprRobotron.Animation=1;
+	rtAttractSprite[3].Type=TYPE_ENFORCER;
+	rtAttractSprite[3].sprRobotron.Direction=DIR_EAST;
+	rtAttractSprite[3].Flags=ROBOTRON_DEAD;
+	rtAttractSprite[3].DecisionTimer=120;
+	rtAttractSprite[3].Decision=150;
+	rtAttractSprite[4].Index=SPRITEROBOTRON+4;
+	rtAttractSprite[4].sprRobotron.xPosition=ATTRACT_X;
+	rtAttractSprite[4].sprRobotron.yPosition=ATTRACT_Y;
+	rtAttractSprite[4].sprRobotron.Tile=TILEATTRACT+4;
+	rtAttractSprite[4].sprRobotron.Animation=1;
+	rtAttractSprite[4].Type=TYPE_BRAIN;
+	rtAttractSprite[4].sprRobotron.Direction=DIR_EAST;
+	rtAttractSprite[4].Flags=ROBOTRON_DEAD;
+	rtAttractSprite[4].DecisionTimer=130;
+	rtAttractSprite[4].Decision=160;
+	rtAttractSprite[5].Index=SPRITEROBOTRON+5;
+	rtAttractSprite[5].sprRobotron.xPosition=ATTRACT_X;
+	rtAttractSprite[5].sprRobotron.yPosition=ATTRACT_Y;
+	rtAttractSprite[5].sprRobotron.Tile=TILEATTRACT+5;
+	rtAttractSprite[5].sprRobotron.Animation=1;
+	rtAttractSprite[5].Type=TYPE_QUARK;
+	rtAttractSprite[5].sprRobotron.Direction=DIR_EAST;
+	rtAttractSprite[5].Flags=ROBOTRON_DEAD;
+	rtAttractSprite[5].DecisionTimer=140;
+	rtAttractSprite[5].Decision=170;
+	rtAttractSprite[6].Index=SPRITEROBOTRON+6;
+	rtAttractSprite[6].sprRobotron.xPosition=ATTRACT_X;
+	rtAttractSprite[6].sprRobotron.yPosition=ATTRACT_Y;
+	rtAttractSprite[6].sprRobotron.Tile=TILEATTRACT+6;
+	rtAttractSprite[6].sprRobotron.Animation=1;
+	rtAttractSprite[6].Type=TYPE_TANK;
+	rtAttractSprite[6].sprRobotron.Direction=DIR_EAST;
+	rtAttractSprite[6].Flags=ROBOTRON_DEAD;
+	rtAttractSprite[6].DecisionTimer=150;
+	rtAttractSprite[6].Decision=180;
 
 	iAttractMode=0;
 	iAttractFrame=StartFrame;
@@ -397,6 +470,39 @@ GAME rtAttractMode(GAME gmPrevious, HIGHSCOREENTRY hstRobotron[], u16 StartFrame
 							PrintDecimal(SCR_1_PLANE, PAL_LOGO, 2  + (iLoopX*8),4 + iLoopY*2, hstRobotron[iLoopY*2+iLoopX].Score, 7);
 						}
 				}
+		}
+
+		for(iLoopSprite=0;iLoopSprite<11;iLoopSprite++)
+		{
+			// Create the sprite on frame .DecisionTimer
+			if (rtAttractSprite[iLoopSprite].DecisionTimer==iAttractFrame)
+			{
+				// Create the sprite
+				// These appear to be being created on one of the scroll planes?
+				// Are my tile bases overlapping?
+				// Yes. Exactly that - the Robotron Logo was running @144 chars and starting at position 128...
+				rtAttractSprite[iLoopSprite].Flags=ROBOTRON_ACTIVE;
+				rtAttractSprite[iLoopSprite].sprRobotron.xPosition=ATTRACT_X;
+				rtAttractSprite[iLoopSprite].sprRobotron.yPosition=ATTRACT_Y;
+				CopySpriteTile((u16*)rtRobotron, rtAttractSprite[iLoopSprite].sprRobotron.Tile, (rtAttractSprite[iLoopSprite].Type<<5)+(rtAttractSprite[iLoopSprite].sprRobotron.Direction<<1)+rtAttractSprite[iLoopSprite].sprRobotron.Animation);
+				SetSprite(rtAttractSprite[iLoopSprite].Index, rtAttractSprite[iLoopSprite].sprRobotron.Tile, 0, rtAttractSprite[iLoopSprite].sprRobotron.xPosition>>7, rtAttractSprite[iLoopSprite].sprRobotron.yPosition>>7, PAL_ROBOTRON+(u8)rtAttractSprite[iLoopSprite].Type);
+			}
+			// Delete the sprite on frame .Decision
+			if (rtAttractSprite[iLoopSprite].Decision==iAttractFrame)
+			{
+				// Destroy the sprite
+				rtAttractSprite[iLoopSprite].Flags=ROBOTRON_DEAD;
+				CopySpriteTile((u16*)rtRobotron, rtAttractSprite[iLoopSprite].sprRobotron.Tile, 0);
+			}
+			// Animate/Move the sprite on anything in the middle...
+			if (rtAttractSprite[iLoopSprite].DecisionTimer<iAttractFrame&&rtAttractSprite[iLoopSprite].Decision>iAttractFrame)
+			{
+				// Move the sprite, why they no move?
+				rtAttractSprite[iLoopSprite].sprRobotron.xPosition+=(gameReturn.GruntSpeed<<4);
+				rtAttractSprite[iLoopSprite].sprRobotron.Animation^=1;
+				CopySpriteTile((u16*)rtRobotron, rtAttractSprite[iLoopSprite].sprRobotron.Tile, (rtAttractSprite[iLoopSprite].Type<<5)+(rtAttractSprite[iLoopSprite].sprRobotron.Direction<<1)+rtAttractSprite[iLoopSprite].sprRobotron.Animation);
+				SetSpritePosition(rtAttractSprite[iLoopSprite].Index, rtAttractSprite[iLoopSprite].sprRobotron.xPosition>>7, rtAttractSprite[iLoopSprite].sprRobotron.yPosition>>7);
+			}
 		}
 
 		iPalette++;

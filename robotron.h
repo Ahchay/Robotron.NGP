@@ -124,6 +124,7 @@ typedef struct Game
 #define TILEPLAYER SpriteTileBase
 #define TILESHOT SpriteTileBase+1
 #define TILEROBOTRON TILESHOT+1+MAX_SHOT
+#define TILEATTRACT 16
 
 #define SPRITEPLAYER 0
 #define SPRITESHOT 1
@@ -154,6 +155,9 @@ typedef struct Game
 #define MAX_X 18944
 #define MIN_Y 2048
 #define MAX_Y 18048
+
+#define ATTRACT_X 1280
+#define ATTRACT_Y 12288
 
 #define CENTRE_X 9792
 #define CENTRE_Y 10048
