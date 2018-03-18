@@ -90,10 +90,10 @@ typedef struct Game
 #define PAL_PLAYER 1
 #define PAL_SHOT 2
 #define PAL_ROBOTRON 3
-#define PAL_BORDER 1
-#define PAL_LOGO 2
-#define PAL_ATTRACTTEXT 3
-#define PAL_NGPCLOGO 1
+#define PAL_BORDER 2
+#define PAL_LOGO 3
+#define PAL_ATTRACTTEXT 4
+#define PAL_NGPCLOGO 2
 #define PAL_CLEAR 0
 
 //Robotron (sprite really) order is important.
@@ -194,7 +194,7 @@ void rtCreatePalette();
 PLAYER rtCreatePlayer();
 LEVEL rtCreateLevel(u8 LevelNumber);
 PLAYER rtMovePlayer(PLAYER sprPlayer, GAME gmRobotron);
-void rtDrawLevel();
+void rtDrawLevel(u8 iLives);
 LEVEL rtMoveRobotrons(LEVEL levRobotron, GAME gmRobotron, PLAYER sprPlayer);
 ROBOTRON rtMoveElectrode(ROBOTRON rtElectrode, GAME gmRobotron, PLAYER sprPlayer);
 ROBOTRON rtMoveGrunt(ROBOTRON rtGrunt, GAME gmRobotron, PLAYER sprPlayer);
