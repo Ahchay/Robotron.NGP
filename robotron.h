@@ -87,13 +87,14 @@ typedef struct Game
 #define COLLISION_HIT 1
 
 #define PAL_DEFAULT 0
+#define PAL_BORDER 2
+#define PAL_NGPCLOGO 2
+#define PAL_LOGO 3
+#define PAL_ATTRACTTEXT 4
+#define PAL_LIVES 5
 #define PAL_PLAYER 1
 #define PAL_SHOT 2
 #define PAL_ROBOTRON 3
-#define PAL_BORDER 2
-#define PAL_LOGO 3
-#define PAL_ATTRACTTEXT 4
-#define PAL_NGPCLOGO 2
 #define PAL_CLEAR 0
 
 //Robotron (sprite really) order is important.

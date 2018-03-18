@@ -26,10 +26,10 @@ void rtCreatePalette()
 {
 	//Create the system palettes
 	SetPalette(SCR_1_PLANE, PAL_DEFAULT, 0, RGB(15,15,0),RGB(8,4,0),RGB(15,0,0));
+	SetPalette(SCR_1_PLANE, PAL_LIVES, 0, RGB(15,0,0), RGB(0,15,0), RGB(15,15,15));
 	SetPalette(SCR_1_PLANE, PAL_BORDER, 0, RGB(15,0,0), RGB(8,12,0), RGB(0,0,15));
 	SetPalette(SCR_1_PLANE, PAL_LOGO, 0, RGB(15,15,0), RGB(15,0,0), 0);
 	SetPalette(SCR_1_PLANE, PAL_ATTRACTTEXT, 0, RGB(15,15,15), RGB(15,15,15), RGB(15,15,15));
-	SetPalette(SCR_1_PLANE, PAL_PLAYER, 0, RGB(15,0,0), RGB(0,15,0), RGB(15,15,15));
 
 	SetPalette(SCR_2_PLANE, PAL_DEFAULT, 0, RGB(4,2,0), RGB(8,4,0), RGB(15,7,0));
 	SetPalette(SCR_2_PLANE, PAL_NGPCLOGO, 0, RGB(15,0,0), RGB(0,15,0), RGB(0,0,15));
@@ -732,7 +732,7 @@ HIGHSCOREENTRY rtEnterInitials(u16 Score)
 		if (iPosition!=iOldPosition)
 		{
 			PrintString(SCR_1_PLANE, PAL_BORDER, 8, 12, "   ");
-			PutTile(SCR_1_PLANE, PAL_ROBOTRON+TYPE_PLAYER, 8+iPosition, 12, 127);
+			PutTile(SCR_1_PLANE, PAL_LIVES, 8+iPosition, 12, 127);
 			iOldPosition=iPosition;
 		}
 
@@ -903,7 +903,7 @@ void rtDrawLevel(u8 iLives)
 	// Display no of lives
 	for (iLoop=1;iLoop<iLives;iLoop++)
 	{
-		PutTile(SCR_1_PLANE,PAL_PLAYER,19-iLoop,0,127);
+		PutTile(SCR_1_PLANE,PAL_LIVES,19-iLoop,0,127);
 	}
 }
 
