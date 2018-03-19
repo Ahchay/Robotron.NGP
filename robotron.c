@@ -414,7 +414,7 @@ GAME rtAttractMode(GAME gmPrevious, HIGHSCOREENTRY hstRobotron[], u16 StartFrame
 	rtAttractSprite[8].sprRobotron.Direction=DIR_EAST;
 	rtAttractSprite[8].Flags=ROBOTRON_DEAD;
 	rtAttractSprite[8].DecisionTimer=300;
-	rtAttractSprite[8].Decision=344;
+	rtAttractSprite[8].Decision=334;
 	rtAttractSprite[9].Index=SPRITEROBOTRON+0;
 	rtAttractSprite[9].sprRobotron.xPosition=ATTRACT_X;
 	rtAttractSprite[9].sprRobotron.yPosition=ATTRACT_Y;
