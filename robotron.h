@@ -65,6 +65,7 @@ typedef struct Game
 	u16 GruntSpeed;
 	u16 HulkSpeed;
 	u16 FamilySpeed;
+	u16 ProgSpeed;
 	u16 SpheroidSpeed;
 	u16 EnforcerSpeed;
 	u16 EnforcerShotSpeed;
@@ -201,6 +202,7 @@ ROBOTRON rtMoveElectrode(ROBOTRON rtElectrode, GAME gmRobotron, PLAYER sprPlayer
 ROBOTRON rtMoveGrunt(ROBOTRON rtGrunt, GAME gmRobotron, PLAYER sprPlayer);
 ROBOTRON rtMoveHulk(ROBOTRON rtHulk, GAME gmRobotron, PLAYER sprPlayer);
 ROBOTRON rtMoveFamily(ROBOTRON rtFamily, GAME gmRobotron, PLAYER sprPlayer);
+ROBOTRON rtMoveProg(ROBOTRON rtProg, GAME gmRobotron, PLAYER sprPlayer);
 LEVEL rtMoveSpheroid(u8 iSpheroid, LEVEL levRobotron, GAME gmRobotron, PLAYER sprPlayer);
 LEVEL rtMoveEnforcer(u8 iEnforcer, LEVEL levRobotron, GAME gmRobotron, PLAYER sprPlayer);
 LEVEL rtMoveBrain(u8 iBrain, LEVEL levRobotron, GAME gmRobotron, PLAYER sprPlayer);

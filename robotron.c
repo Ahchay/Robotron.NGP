@@ -68,7 +68,7 @@ PLAYER rtCreatePlayer()
 
 	//Setup the player sprite
 
-	sprPlayer.Lives=3;
+	sprPlayer.Lives=5;
 	sprPlayer.Score=0;
 	sprPlayer.FamilyMultiplier=1;
 	sprPlayer.Flags=0;
@@ -305,7 +305,7 @@ GAME rtAttractMode(GAME gmPrevious, HIGHSCOREENTRY hstRobotron[], u16 StartFrame
 
 	gameReturn=gmPrevious;
 	// Comment this line out to allow "continuous" progression through the levels. Handy for testing.
-	gameReturn.Level=0;
+	gameReturn.Level=4;
 
 	//Draw logo's and allow the user to start a game/select difficulty etc
 
@@ -961,14 +961,17 @@ LEVEL rtMoveRobotrons(LEVEL levRobotron, GAME gmRobotron, PLAYER sprPlayer)
 				case TYPE_DAD:
 				case TYPE_MIKEY:
 					//Move the last human family
-					levRobotron.Robotron[iRobotronLoop]=rtMoveFamily(levRobotron.Robotron[iRobotronLoop], gmRobotron, sprPlayer);
+					if (levRobotron.Robotron[iRobotronLoop].Flags & FAMILY_PROG)
+						levRobotron.Robotron[iRobotronLoop]=rtMoveProg(levRobotron.Robotron[iRobotronLoop], gmRobotron, sprPlayer);
+					else
+						levRobotron.Robotron[iRobotronLoop]=rtMoveFamily(levRobotron.Robotron[iRobotronLoop], gmRobotron, sprPlayer);
 					break;
 			}
 		}
 	}
 
 	// Palette shift the Prog
-	SetPalette(SPRITE_PLANE, PAL_ROBOTRON+TYPE_PROG, 0, VBCounter, VBCounter, VBCounter);
+	//SetPalette(SPRITE_PLANE, PAL_ROBOTRON+TYPE_PROG, 0, VBCounter, VBCounter, VBCounter);
 
 	return levRobotron;
 }
@@ -1100,22 +1103,12 @@ ROBOTRON rtMoveFamily(ROBOTRON rtFamily, GAME gmRobotron, PLAYER sprPlayer)
 	//Move a Family member
 	//Slightly more complicated movement. Not a *lot* more complicated but slightly...
 
-	// If they've been Progged then they get a bit more aggressive
-	// (i.e. Move faster, and the direction decision making is more of a homing in on the player)
-	// Speed can be a multiplier of the FamilySpeed
-
-	u8 iSpeedMultiplier;
-
-	iSpeedMultiplier=1;
-	if (rtFamily.Flags&FAMILY_PROG)
-		iSpeedMultiplier=2;
-
 	if (rtFamily.sprRobotron.Direction==DIR_NORTH)
 	{
 		//Move northwards
 		if (rtFamily.sprRobotron.yPosition>MIN_Y)
 		{
-			rtFamily.sprRobotron.yPosition-=gmRobotron.FamilySpeed*iSpeedMultiplier;
+			rtFamily.sprRobotron.yPosition-=gmRobotron.FamilySpeed;
 		}
 		else
 		{
@@ -1127,7 +1120,7 @@ ROBOTRON rtMoveFamily(ROBOTRON rtFamily, GAME gmRobotron, PLAYER sprPlayer)
 		//Move eastwards
 		if (rtFamily.sprRobotron.xPosition<MAX_X)
 		{
-			rtFamily.sprRobotron.xPosition+=gmRobotron.FamilySpeed*iSpeedMultiplier;
+			rtFamily.sprRobotron.xPosition+=gmRobotron.FamilySpeed;
 		}
 		else
 		{
@@ -1139,7 +1132,7 @@ ROBOTRON rtMoveFamily(ROBOTRON rtFamily, GAME gmRobotron, PLAYER sprPlayer)
 		//Move south
 		if (rtFamily.sprRobotron.yPosition<MAX_Y)
 		{
-			rtFamily.sprRobotron.yPosition+=gmRobotron.FamilySpeed*iSpeedMultiplier;
+			rtFamily.sprRobotron.yPosition+=gmRobotron.FamilySpeed;
 		}
 		else
 		{
@@ -1151,7 +1144,7 @@ ROBOTRON rtMoveFamily(ROBOTRON rtFamily, GAME gmRobotron, PLAYER sprPlayer)
 		//Go west
 		if (rtFamily.sprRobotron.xPosition>MIN_X)
 		{
-			rtFamily.sprRobotron.xPosition-=gmRobotron.FamilySpeed*iSpeedMultiplier;
+			rtFamily.sprRobotron.xPosition-=gmRobotron.FamilySpeed;
 		}
 		else
 		{
@@ -1159,82 +1152,29 @@ ROBOTRON rtMoveFamily(ROBOTRON rtFamily, GAME gmRobotron, PLAYER sprPlayer)
 		}
 	}
 
-	//Then decide whether to change direction or not
-	if (rtFamily.Flags&FAMILY_PROG)
+	// Not progged, so just mooch about a bit waiting to die...
+	if (rtFamily.DecisionTimer==rtFamily.Decision)
 	{
-		// Home in on the player
-		switch (rtFamily.sprRobotron.Direction)
+		rtFamily.DecisionTimer=0;
+		switch (((u8)QRandom())>>6)
 		{
-			case DIR_EAST:
-				//x position should be less than the players
-				if (sprPlayer.sprPlayer.xPosition-rtFamily.sprRobotron.xPosition<128)
-				{
-					//head north/south
-					if (sprPlayer.sprPlayer.yPosition<rtFamily.sprRobotron.yPosition)
-						rtFamily.sprRobotron.Direction=DIR_NORTH;
-					else
-						rtFamily.sprRobotron.Direction=DIR_SOUTH;
-				}
-				break;
-			case DIR_WEST:
-				// x position should be greater than the players
-				if (rtFamily.sprRobotron.xPosition-sprPlayer.sprPlayer.xPosition<128)
-				{
-					//head north/south
-					if (sprPlayer.sprPlayer.yPosition<rtFamily.sprRobotron.yPosition)
-						rtFamily.sprRobotron.Direction=DIR_NORTH;
-					else
-						rtFamily.sprRobotron.Direction=DIR_SOUTH;
-				}
-				break;
-			case DIR_SOUTH:
-				//y position should be less than the players
-				if (sprPlayer.sprPlayer.yPosition-rtFamily.sprRobotron.yPosition<128)
-				{
-					//head north/south
-					if (sprPlayer.sprPlayer.xPosition<rtFamily.sprRobotron.xPosition)
-						rtFamily.sprRobotron.Direction=DIR_NORTH;
-					else
-						rtFamily.sprRobotron.Direction=DIR_SOUTH;
-				}
-				break;
-			case DIR_NORTH:
-				//y position should be greater than the players
-				if (rtFamily.sprRobotron.yPosition-sprPlayer.sprPlayer.yPosition<128)
-				{
-					//head north/south
-					if (sprPlayer.sprPlayer.xPosition<rtFamily.sprRobotron.xPosition)
-						rtFamily.sprRobotron.Direction=DIR_NORTH;
-					else
-						rtFamily.sprRobotron.Direction=DIR_SOUTH;
-				}
-				break;
+		case 0:
+			rtFamily.sprRobotron.Direction=DIR_NORTH;
+			break;
+		case 1:
+			rtFamily.sprRobotron.Direction=DIR_EAST;
+			break;
+		case 2:
+			rtFamily.sprRobotron.Direction=DIR_SOUTH;
+			break;
+		case 3:
+			rtFamily.sprRobotron.Direction=DIR_WEST;
+			break;
 		}
-	}
-	else
-	{
-		if (rtFamily.DecisionTimer==rtFamily.Decision)
-		{
-			rtFamily.DecisionTimer=0;
-			switch (((u8)QRandom())>>6)
-			{
-			case 0:
-				rtFamily.sprRobotron.Direction=DIR_NORTH;
-				break;
-			case 1:
-				rtFamily.sprRobotron.Direction=DIR_EAST;
-				break;
-			case 2:
-				rtFamily.sprRobotron.Direction=DIR_SOUTH;
-				break;
-			case 3:
-				rtFamily.sprRobotron.Direction=DIR_WEST;
-				break;
-			}
-			rtFamily.Decision=1+(u16)QRandom();
+		rtFamily.Decision=1+(u16)QRandom();
 
-		}
 	}
+
 	rtFamily.DecisionTimer++;
 	rtFamily.sprRobotron.Animation^=1;
 
@@ -1243,6 +1183,127 @@ ROBOTRON rtMoveFamily(ROBOTRON rtFamily, GAME gmRobotron, PLAYER sprPlayer)
 	SetSpritePosition(rtFamily.Index, rtFamily.sprRobotron.xPosition>>7, rtFamily.sprRobotron.yPosition>>7);
 
 	return rtFamily;
+}
+
+ROBOTRON rtMoveProg(ROBOTRON rtProg, GAME gmRobotron, PLAYER sprPlayer)
+{
+	//Move a Prog
+	//Slightly more complicated movement. Not a *lot* more complicated but slightly...
+
+	// If they've been Progged then they get a bit more aggressive
+	// (i.e. Move faster, and the direction decision making is more of a homing in on the player)
+	// Speed can be a multiplier of the ProgSpeed
+
+	// My progs don't move
+	// Also, not fatal. Bugger. (that will be in rtRobotronCollision)
+
+	if (rtProg.sprRobotron.Direction==DIR_NORTH)
+	{
+		//Move northwards
+		if (rtProg.sprRobotron.yPosition>MIN_Y)
+		{
+			rtProg.sprRobotron.yPosition-=gmRobotron.ProgSpeed;
+		}
+		else
+		{
+			rtProg.sprRobotron.Direction=DIR_SOUTH;
+		}
+	}
+	if (rtProg.sprRobotron.Direction==DIR_EAST)
+	{
+		//Move eastwards
+		if (rtProg.sprRobotron.xPosition<MAX_X)
+		{
+			rtProg.sprRobotron.xPosition+=gmRobotron.ProgSpeed;
+		}
+		else
+		{
+			rtProg.sprRobotron.Direction=DIR_WEST;
+		}
+	}
+	if (rtProg.sprRobotron.Direction==DIR_SOUTH)
+	{
+		//Move south
+		if (rtProg.sprRobotron.yPosition<MAX_Y)
+		{
+			rtProg.sprRobotron.yPosition+=gmRobotron.ProgSpeed;
+		}
+		else
+		{
+			rtProg.sprRobotron.Direction=DIR_NORTH;
+		}
+	}
+	if (rtProg.sprRobotron.Direction==DIR_WEST)
+	{
+		//Go west
+		if (rtProg.sprRobotron.xPosition>MIN_X)
+		{
+			rtProg.sprRobotron.xPosition-=gmRobotron.ProgSpeed;
+		}
+		else
+		{
+			rtProg.sprRobotron.Direction=DIR_EAST;
+		}
+	}
+
+	//Then decide whether to change direction or not
+	// Home in on the player
+	switch (rtProg.sprRobotron.Direction)
+	{
+		case DIR_EAST:
+			//x position should be less than the players
+			if (sprPlayer.sprPlayer.xPosition-rtProg.sprRobotron.xPosition<128)
+			{
+				//head north/south
+				if (sprPlayer.sprPlayer.yPosition<rtProg.sprRobotron.yPosition)
+					rtProg.sprRobotron.Direction=DIR_NORTH;
+				else
+					rtProg.sprRobotron.Direction=DIR_SOUTH;
+			}
+			break;
+		case DIR_WEST:
+			// x position should be greater than the players
+			if (rtProg.sprRobotron.xPosition-sprPlayer.sprPlayer.xPosition<128)
+			{
+				//head north/south
+				if (sprPlayer.sprPlayer.yPosition<rtProg.sprRobotron.yPosition)
+					rtProg.sprRobotron.Direction=DIR_NORTH;
+				else
+					rtProg.sprRobotron.Direction=DIR_SOUTH;
+			}
+			break;
+		case DIR_SOUTH:
+			//y position should be less than the players
+			if (sprPlayer.sprPlayer.yPosition-rtProg.sprRobotron.yPosition<128)
+			{
+				//head north/south
+				if (sprPlayer.sprPlayer.xPosition<rtProg.sprRobotron.xPosition)
+					rtProg.sprRobotron.Direction=DIR_NORTH;
+				else
+					rtProg.sprRobotron.Direction=DIR_SOUTH;
+			}
+			break;
+		case DIR_NORTH:
+			//y position should be greater than the players
+			if (rtProg.sprRobotron.yPosition-sprPlayer.sprPlayer.yPosition<128)
+			{
+				//head north/south
+				if (sprPlayer.sprPlayer.xPosition<rtProg.sprRobotron.xPosition)
+					rtProg.sprRobotron.Direction=DIR_NORTH;
+				else
+					rtProg.sprRobotron.Direction=DIR_SOUTH;
+			}
+			break;
+	}
+
+	rtProg.DecisionTimer++;
+	rtProg.sprRobotron.Animation^=1;
+
+	//Move the sprite and go home...
+	CopySpriteTile((u16*)rtRobotron, rtProg.sprRobotron.Tile, (rtProg.Type<<5)+(rtProg.sprRobotron.Direction<<1)+rtProg.sprRobotron.Animation);
+	SetSpritePosition(rtProg.Index, rtProg.sprRobotron.xPosition>>7, rtProg.sprRobotron.yPosition>>7);
+
+	return rtProg;
 }
 
 LEVEL rtMoveEnforcer(u8 iEnforcer, LEVEL levRobotron, GAME gmRobotron, PLAYER sprPlayer)
@@ -1394,10 +1455,12 @@ LEVEL rtMoveBrain(u8 iBrain, LEVEL levRobotron, GAME gmRobotron, PLAYER sprPlaye
 	{
 		//Target is either dead or has been collected by the player
 		//<Terminator>Time to aquire a new target
+		levRobotron.Robotron[iBrain].Decision++;
 
 	}
 
 	// Also, very occasionally let off a warning shot
+
 
 	levRobotron.Robotron[iBrain].sprRobotron.Animation^=1;
 
@@ -2068,7 +2131,7 @@ void rtRobotronCollision(LEVEL * levRobotron, GAME gmRobotron, PLAYER * sprPlaye
 	for (iRobotronLoop=0;iRobotronLoop<=MAX_ROBOTRON;iRobotronLoop++)
 	{
 		// Needs to be a bit cleverer... Family are dangerous if they have been turned into Progs...
-		if 	((((*levRobotron).Robotron[iRobotronLoop].Type>TYPE_MIKEY)&&((*levRobotron).Robotron[iRobotronLoop].Flags&ROBOTRON_ACTIVE))||(((*levRobotron).Robotron[iRobotronLoop].Flags&FAMILY_PROG)&&((*levRobotron).Robotron[iRobotronLoop].Flags&ROBOTRON_ACTIVE)))
+		if 	((((*levRobotron).Robotron[iRobotronLoop].Type>TYPE_MIKEY)&&((*levRobotron).Robotron[iRobotronLoop].Flags&ROBOTRON_ACTIVE))||(((*levRobotron).Robotron[iRobotronLoop].Flags & FAMILY_PROG)&&((*levRobotron).Robotron[iRobotronLoop].Flags&ROBOTRON_ACTIVE)))
 		{
 			//Only bother with collision detection for enemy robotrons
 
@@ -2237,7 +2300,7 @@ void rtRobotronCollision(LEVEL * levRobotron, GAME gmRobotron, PLAYER * sprPlaye
 			//Check for family members
 			for (iFamilyLoop=0;iFamilyLoop<=MAX_ROBOTRON;iFamilyLoop++)
 			{
-				if (((*levRobotron).Robotron[iFamilyLoop].Type<=TYPE_MIKEY) && ((*levRobotron).Robotron[iFamilyLoop].Flags&ROBOTRON_ACTIVE) && !((*levRobotron).Robotron[iFamilyLoop].Flags&FAMILY_PROG))
+				if (((*levRobotron).Robotron[iFamilyLoop].Type<=TYPE_MIKEY) && ((*levRobotron).Robotron[iFamilyLoop].Flags&ROBOTRON_ACTIVE) && !((*levRobotron).Robotron[iFamilyLoop].Flags & FAMILY_PROG))
 				{
 					iCollision=rtCollision((*levRobotron).Robotron[iFamilyCollisionLoop].sprRobotron, (*levRobotron).Robotron[iFamilyLoop].sprRobotron);
 					if (iCollision==COLLISION_HIT)
@@ -2250,10 +2313,11 @@ void rtRobotronCollision(LEVEL * levRobotron, GAME gmRobotron, PLAYER * sprPlaye
 						}
 						else
 						{
-							(*levRobotron).Robotron[iFamilyLoop].Flags=FAMILY_PROG;
+							// Does this happen? It must do, because the palette shift happens. So, why isn't FAMILY_PROG readable later?
+							(*levRobotron).Robotron[iFamilyLoop].Flags=(*levRobotron).Robotron[iFamilyLoop].Flags + FAMILY_PROG;
 							// Change the palette for the family sprite
 							// Easiest just to recreate the sprite?
-							SetSprite((*levRobotron).Robotron[iFamilyLoop].Index, (*levRobotron).Robotron[iFamilyLoop].sprRobotron.Tile, 0, (*levRobotron).Robotron[iFamilyLoop].sprRobotron.xPosition>>7, (*levRobotron).Robotron[iFamilyLoop].sprRobotron.yPosition>>7, PAL_ROBOTRON+TYPE_PROG);
+							//SetSprite((*levRobotron).Robotron[iFamilyLoop].Index, (*levRobotron).Robotron[iFamilyLoop].sprRobotron.Tile, 0, (*levRobotron).Robotron[iFamilyLoop].sprRobotron.xPosition>>7, (*levRobotron).Robotron[iFamilyLoop].sprRobotron.yPosition>>7, PAL_ROBOTRON+TYPE_PROG);
 						}
 						(*levRobotron).Robotron[iFamilyLoop].sprRobotron.Direction=0;
 					}

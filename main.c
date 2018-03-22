@@ -75,6 +75,7 @@ void main()
 	gRobotron.GruntSpeed=16;
 	gRobotron.HulkSpeed=8;
 	gRobotron.FamilySpeed=4;
+	gRobotron.ProgSpeed=32;
 	gRobotron.SpheroidSpeed=48;
 	gRobotron.EnforcerSpeed=48;
 	gRobotron.EnforcerShotSpeed=48;
