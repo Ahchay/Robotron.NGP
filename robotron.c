@@ -55,10 +55,9 @@ void rtCreatePalette()
 	SetPalette(SPRITE_PLANE, PAL_ROBOTRON+TYPE_BRAIN, 0, RGB(0,0,15), RGB(0,15,0), RGB(15,0,15));
 	SetPalette(SPRITE_PLANE, PAL_ROBOTRON+TYPE_QUARK, 0, RGB(0,0,15), RGB(15,0,15), RGB(15,15,15));
 	SetPalette(SPRITE_PLANE, PAL_ROBOTRON+TYPE_TANK, 0, RGB(15,0,0), RGB(0,15,0), RGB(0,0,15));
-	SetPalette(SPRITE_PLANE, PAL_ROBOTRON+TYPE_ENFORCER_SHOT, 0, RGB(15,0,0), RGB(0,15,0), RGB(0,0,15));
-	SetPalette(SPRITE_PLANE, PAL_ROBOTRON+TYPE_TANK_SHOT, 0, RGB(15,0,0), RGB(0,15,0), RGB(0,0,15));
-	SetPalette(SPRITE_PLANE, PAL_ROBOTRON+TYPE_BRAIN_SHOT, 0, RGB(15,0,0), RGB(0,15,0), RGB(0,0,15));
-	SetPalette(SPRITE_PLANE, PAL_ROBOTRON+TYPE_PROG, 0, RGB(15,15,15), RGB(15,15,15), RGB(15,15,15));
+	SetPalette(SPRITE_PLANE, PAL_ROBOTRON+TYPE_BRAIN_SHOT, 0, RGB(15,15,15), RGB(15,15,15), RGB(15,15,15));
+	SetPalette(SPRITE_PLANE, PAL_ROBOTRON+TYPE_TANK_SHOT, 0, RGB(15,15,15), RGB(15,15,15), RGB(15,15,15));
+	SetPalette(SPRITE_PLANE, PAL_ROBOTRON+TYPE_ENFORCER_SHOT, 0, RGB(15,15,15), RGB(15,15,15), RGB(15,15,15));
 }
 
 PLAYER rtCreatePlayer()
@@ -971,7 +970,7 @@ LEVEL rtMoveRobotrons(LEVEL levRobotron, GAME gmRobotron, PLAYER sprPlayer)
 	}
 
 	// Palette shift the Prog
-	//SetPalette(SPRITE_PLANE, PAL_ROBOTRON+TYPE_PROG, 0, VBCounter, VBCounter, VBCounter);
+	SetPalette(SPRITE_PLANE, PAL_ROBOTRON+TYPE_PROG, 0, RGB(VBCounter,VBCounter,VBCounter), RGB(VBCounter,VBCounter,VBCounter), RGB(VBCounter,VBCounter,VBCounter));
 
 	return levRobotron;
 }
@@ -1195,7 +1194,6 @@ ROBOTRON rtMoveProg(ROBOTRON rtProg, GAME gmRobotron, PLAYER sprPlayer)
 	// Speed can be a multiplier of the ProgSpeed
 
 	// My progs don't move
-	// Also, not fatal. Bugger. (that will be in rtRobotronCollision)
 
 	if (rtProg.sprRobotron.Direction==DIR_NORTH)
 	{
@@ -1248,6 +1246,7 @@ ROBOTRON rtMoveProg(ROBOTRON rtProg, GAME gmRobotron, PLAYER sprPlayer)
 
 	//Then decide whether to change direction or not
 	// Home in on the player
+	/*
 	switch (rtProg.sprRobotron.Direction)
 	{
 		case DIR_EAST:
@@ -1295,11 +1294,14 @@ ROBOTRON rtMoveProg(ROBOTRON rtProg, GAME gmRobotron, PLAYER sprPlayer)
 			}
 			break;
 	}
+	*/
 
 	rtProg.DecisionTimer++;
 	rtProg.sprRobotron.Animation^=1;
 
 	//Move the sprite and go home...
+	// For some reason, this is attempting to load a "NULL" tile? Hence why my progs disappear?
+	// This was because the direction had been set to zero...
 	CopySpriteTile((u16*)rtRobotron, rtProg.sprRobotron.Tile, (rtProg.Type<<5)+(rtProg.sprRobotron.Direction<<1)+rtProg.sprRobotron.Animation);
 	SetSpritePosition(rtProg.Index, rtProg.sprRobotron.xPosition>>7, rtProg.sprRobotron.yPosition>>7);
 
@@ -2310,16 +2312,15 @@ void rtRobotronCollision(LEVEL * levRobotron, GAME gmRobotron, PLAYER * sprPlaye
 						{
 							(*levRobotron).Robotron[iFamilyLoop].Flags=ROBOTRON_DEAD;
 							CopySpriteTile((u16*)rtRobotron, (*levRobotron).Robotron[iFamilyLoop].sprRobotron.Tile, 0);
-						}
+							(*levRobotron).Robotron[iFamilyLoop].sprRobotron.Direction=0;						}
 						else
 						{
 							// Does this happen? It must do, because the palette shift happens. So, why isn't FAMILY_PROG readable later?
 							(*levRobotron).Robotron[iFamilyLoop].Flags=(*levRobotron).Robotron[iFamilyLoop].Flags + FAMILY_PROG;
 							// Change the palette for the family sprite
 							// Easiest just to recreate the sprite?
-							//SetSprite((*levRobotron).Robotron[iFamilyLoop].Index, (*levRobotron).Robotron[iFamilyLoop].sprRobotron.Tile, 0, (*levRobotron).Robotron[iFamilyLoop].sprRobotron.xPosition>>7, (*levRobotron).Robotron[iFamilyLoop].sprRobotron.yPosition>>7, PAL_ROBOTRON+TYPE_PROG);
+							SetSprite((*levRobotron).Robotron[iFamilyLoop].Index, (*levRobotron).Robotron[iFamilyLoop].sprRobotron.Tile, 0, (*levRobotron).Robotron[iFamilyLoop].sprRobotron.xPosition>>7, (*levRobotron).Robotron[iFamilyLoop].sprRobotron.yPosition>>7, PAL_ROBOTRON+TYPE_PROG);
 						}
-						(*levRobotron).Robotron[iFamilyLoop].sprRobotron.Direction=0;
 					}
 				}
 			}

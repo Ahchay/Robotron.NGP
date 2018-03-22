@@ -116,12 +116,12 @@ typedef struct Game
 #define TYPE_BRAIN 9
 #define TYPE_QUARK 10
 #define TYPE_TANK 11
-#define TYPE_PROG 12 // Used for palette only
 
-//Followed by the Robotron shot types
+//Followed by the Robotron shot types (these might have to share a palette, and will be used for Progs too)
 #define TYPE_ENFORCER_SHOT 12
 #define TYPE_TANK_SHOT 13
 #define TYPE_BRAIN_SHOT 14
+#define TYPE_PROG 12
 
 #define TILEPLAYER SpriteTileBase
 #define TILESHOT SpriteTileBase+1
