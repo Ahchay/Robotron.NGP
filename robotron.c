@@ -304,7 +304,7 @@ GAME rtAttractMode(GAME gmPrevious, HIGHSCOREENTRY hstRobotron[], u16 StartFrame
 
 	gameReturn=gmPrevious;
 	// Comment this line out to allow "continuous" progression through the levels. Handy for testing.
-	gameReturn.Level=4;
+	gameReturn.Level=0;
 
 	//Draw logo's and allow the user to start a game/select difficulty etc
 
@@ -1201,6 +1201,16 @@ ROBOTRON rtMoveProg(ROBOTRON rtProg, GAME gmRobotron, PLAYER sprPlayer)
 		if (rtProg.sprRobotron.yPosition>MIN_Y)
 		{
 			rtProg.sprRobotron.yPosition-=gmRobotron.ProgSpeed;
+			// Check to see whether the prog is on the same Y co-ord as the player
+			if (sprPlayer.sprPlayer.yPosition>>4==rtProg.sprRobotron.yPosition>>4)
+			{
+				rtProg.sprRobotron.Direction=DIR_WEST;
+				if (sprPlayer.sprPlayer.xPosition<rtProg.sprRobotron.xPosition)
+				{
+					rtProg.sprRobotron.Direction=DIR_EAST;
+				}
+			}
+
 		}
 		else
 		{
@@ -1213,6 +1223,14 @@ ROBOTRON rtMoveProg(ROBOTRON rtProg, GAME gmRobotron, PLAYER sprPlayer)
 		if (rtProg.sprRobotron.xPosition<MAX_X)
 		{
 			rtProg.sprRobotron.xPosition+=gmRobotron.ProgSpeed;
+			if (sprPlayer.sprPlayer.xPosition>>4==rtProg.sprRobotron.xPosition>>4)
+			{
+				rtProg.sprRobotron.Direction=DIR_SOUTH;
+				if (sprPlayer.sprPlayer.yPosition<rtProg.sprRobotron.yPosition)
+				{
+					rtProg.sprRobotron.Direction=DIR_NORTH;
+				}
+			}
 		}
 		else
 		{
@@ -1225,6 +1243,14 @@ ROBOTRON rtMoveProg(ROBOTRON rtProg, GAME gmRobotron, PLAYER sprPlayer)
 		if (rtProg.sprRobotron.yPosition<MAX_Y)
 		{
 			rtProg.sprRobotron.yPosition+=gmRobotron.ProgSpeed;
+			if (sprPlayer.sprPlayer.yPosition>>4==rtProg.sprRobotron.yPosition>>4)
+			{
+				rtProg.sprRobotron.Direction=DIR_WEST;
+				if (sprPlayer.sprPlayer.xPosition<rtProg.sprRobotron.xPosition)
+				{
+					rtProg.sprRobotron.Direction=DIR_EAST;
+				}
+			}
 		}
 		else
 		{
@@ -1237,64 +1263,20 @@ ROBOTRON rtMoveProg(ROBOTRON rtProg, GAME gmRobotron, PLAYER sprPlayer)
 		if (rtProg.sprRobotron.xPosition>MIN_X)
 		{
 			rtProg.sprRobotron.xPosition-=gmRobotron.ProgSpeed;
+			if (sprPlayer.sprPlayer.xPosition>>4==rtProg.sprRobotron.xPosition>>4)
+			{
+				rtProg.sprRobotron.Direction=DIR_SOUTH;
+				if (sprPlayer.sprPlayer.yPosition<rtProg.sprRobotron.yPosition)
+				{
+					rtProg.sprRobotron.Direction=DIR_NORTH;
+				}
+			}
 		}
 		else
 		{
 			rtProg.sprRobotron.Direction=DIR_EAST;
 		}
 	}
-
-	//Then decide whether to change direction or not
-	// Home in on the player
-	/*
-	switch (rtProg.sprRobotron.Direction)
-	{
-		case DIR_EAST:
-			//x position should be less than the players
-			if (sprPlayer.sprPlayer.xPosition-rtProg.sprRobotron.xPosition<128)
-			{
-				//head north/south
-				if (sprPlayer.sprPlayer.yPosition<rtProg.sprRobotron.yPosition)
-					rtProg.sprRobotron.Direction=DIR_NORTH;
-				else
-					rtProg.sprRobotron.Direction=DIR_SOUTH;
-			}
-			break;
-		case DIR_WEST:
-			// x position should be greater than the players
-			if (rtProg.sprRobotron.xPosition-sprPlayer.sprPlayer.xPosition<128)
-			{
-				//head north/south
-				if (sprPlayer.sprPlayer.yPosition<rtProg.sprRobotron.yPosition)
-					rtProg.sprRobotron.Direction=DIR_NORTH;
-				else
-					rtProg.sprRobotron.Direction=DIR_SOUTH;
-			}
-			break;
-		case DIR_SOUTH:
-			//y position should be less than the players
-			if (sprPlayer.sprPlayer.yPosition-rtProg.sprRobotron.yPosition<128)
-			{
-				//head north/south
-				if (sprPlayer.sprPlayer.xPosition<rtProg.sprRobotron.xPosition)
-					rtProg.sprRobotron.Direction=DIR_NORTH;
-				else
-					rtProg.sprRobotron.Direction=DIR_SOUTH;
-			}
-			break;
-		case DIR_NORTH:
-			//y position should be greater than the players
-			if (rtProg.sprRobotron.yPosition-sprPlayer.sprPlayer.yPosition<128)
-			{
-				//head north/south
-				if (sprPlayer.sprPlayer.xPosition<rtProg.sprRobotron.xPosition)
-					rtProg.sprRobotron.Direction=DIR_NORTH;
-				else
-					rtProg.sprRobotron.Direction=DIR_SOUTH;
-			}
-			break;
-	}
-	*/
 
 	rtProg.DecisionTimer++;
 	rtProg.sprRobotron.Animation^=1;
