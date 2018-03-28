@@ -630,7 +630,7 @@ GAME rtAttractMode(GAME gmPrevious, HIGHSCOREENTRY hstRobotron[], u16 StartFrame
 		if(iBorderPaletteStart>5) iBorderPaletteStart=5;
 		Sleep(6);
 
-		// Print the current script...
+		// Print the current script extract...
 		for(iLoopX=0;iLoopX<=15;iLoopX++)
 		{
 			PutTile(SCR_1_PLANE, PAL_ATTRACTTEXT, 2+iLoopX, 15, sScript[iAttractFrame+iLoopX]);
@@ -1440,11 +1440,11 @@ LEVEL rtMoveBrain(u8 iBrain, LEVEL levRobotron, GAME gmRobotron, PLAYER sprPlaye
 		//Target is either dead or has been collected by the player
 		//<Terminator>Time to aquire a new target
 		levRobotron.Robotron[iBrain].Decision++;
-
+		if (levRobotron.Robotron[iBrain].Decision>MAX_ROBOTRON)
+			levRobotron.Robotron[iBrain].Decision=0;
 	}
 
 	// Also, very occasionally let off a warning shot
-
 
 	levRobotron.Robotron[iBrain].sprRobotron.Animation^=1;
 
